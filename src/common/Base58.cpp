@@ -20,7 +20,7 @@ namespace Tools
       const size_t full_block_size = sizeof(encoded_block_sizes) / sizeof(encoded_block_sizes[0]) - 1;
       const size_t full_encoded_block_size = encoded_block_sizes[full_block_size];
       const size_t addr_checksum_size = 4;
-
+//----------------------------------------------------------------------------------------------------
       struct reverse_alphabet
       {
         reverse_alphabet()
@@ -33,21 +33,22 @@ namespace Tools
             m_data[idx] = static_cast<int8_t>(i);
           }
         }
-
+//----------------------------------------------------------------------------------------------------
         int operator()(char letter) const
         {
           size_t idx = static_cast<size_t>(letter - alphabet[0]);
           return idx < m_data.size() ? m_data[idx] : -1;
         }
-
+//----------------------------------------------------------------------------------------------------
         static reverse_alphabet instance;
-
+//----------------------------------------------------------------------------------------------------
       private:
+//----------------------------------------------------------------------------------------------------
         std::vector<int8_t> m_data;
       };
-
+//----------------------------------------------------------------------------------------------------
       reverse_alphabet reverse_alphabet::instance;
-
+//----------------------------------------------------------------------------------------------------
       struct decoded_block_sizes
       {
         decoded_block_sizes()
@@ -58,21 +59,22 @@ namespace Tools
             m_data[encoded_block_sizes[i]] = static_cast<int>(i);
           }
         }
-
+//----------------------------------------------------------------------------------------------------
         int operator()(size_t encoded_block_size) const
         {
           assert(encoded_block_size <= full_encoded_block_size);
           return m_data[encoded_block_size];
         }
-
+//----------------------------------------------------------------------------------------------------
         static decoded_block_sizes instance;
-
+//----------------------------------------------------------------------------------------------------
       private:
+//----------------------------------------------------------------------------------------------------
         std::vector<int> m_data;
       };
-
+//----------------------------------------------------------------------------------------------------
       decoded_block_sizes decoded_block_sizes::instance;
-
+//----------------------------------------------------------------------------------------------------
       uint64_t uint_8be_to_64(const uint8_t* data, size_t size)
       {
         assert(1 <= size && size <= sizeof(uint64_t));
@@ -93,7 +95,7 @@ namespace Tools
 
         return res;
       }
-
+//----------------------------------------------------------------------------------------------------
       void uint_64_to_8be(uint64_t num, size_t size, uint8_t* data)
       {
         assert(1 <= size && size <= sizeof(uint64_t));
@@ -101,7 +103,7 @@ namespace Tools
         uint64_t num_be = SWAP64BE(num);
         memcpy(data, reinterpret_cast<uint8_t*>(&num_be) + sizeof(uint64_t) - size, size);
       }
-
+//----------------------------------------------------------------------------------------------------
       void encode_block(const char* block, size_t size, char* res)
       {
         assert(1 <= size && size <= full_block_size);
@@ -116,7 +118,7 @@ namespace Tools
           --i;
         }
       }
-
+//----------------------------------------------------------------------------------------------------
       bool decode_block(const char* block, size_t size, char* res)
       {
         assert(1 <= size && size <= full_encoded_block_size);
@@ -150,7 +152,7 @@ namespace Tools
         return true;
       }
     }
-
+//----------------------------------------------------------------------------------------------------
     std::string encode(const std::string& data)
     {
       if (data.empty())
@@ -173,7 +175,7 @@ namespace Tools
 
       return res;
     }
-
+//----------------------------------------------------------------------------------------------------
     bool decode(const std::string& enc, std::string& data)
     {
       if (enc.empty())
@@ -205,7 +207,7 @@ namespace Tools
 
       return true;
     }
-
+//----------------------------------------------------------------------------------------------------
     std::string encode_addr(uint64_t tag, const std::string& data)
     {
       std::string buf = get_varint_data(tag);
@@ -215,7 +217,7 @@ namespace Tools
       buf.append(hash_data, addr_checksum_size);
       return encode(buf);
     }
-
+//----------------------------------------------------------------------------------------------------
     bool decode_addr(std::string addr, uint64_t& tag, std::string& data)
     {
       std::string addr_data;

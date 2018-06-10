@@ -22,20 +22,20 @@ namespace Common {
 /////////////////////////////////////////////////////////////////////////////
 AsyncConsoleReader::AsyncConsoleReader() : m_stop(true) {
 }
-
+//----------------------------------------------------------------------------------------------------
 AsyncConsoleReader::~AsyncConsoleReader() {
   stop();
 }
-
+//----------------------------------------------------------------------------------------------------
 void AsyncConsoleReader::start() {
   m_stop = false;
   m_thread = std::thread(std::bind(&AsyncConsoleReader::consoleThread, this));
 }
-
+//----------------------------------------------------------------------------------------------------
 bool AsyncConsoleReader::getline(std::string& line) {
   return m_queue.pop(line);
 }
-
+//----------------------------------------------------------------------------------------------------
 void AsyncConsoleReader::pause() {
   if (m_stop) {
     return;
@@ -49,11 +49,11 @@ void AsyncConsoleReader::pause() {
 
   m_thread = std::thread();
 }
-
+//----------------------------------------------------------------------------------------------------
 void AsyncConsoleReader::unpause() {
   start();
 } 
-
+//----------------------------------------------------------------------------------------------------
 void AsyncConsoleReader::stop() {
 
   if (m_stop) {
@@ -72,11 +72,11 @@ void AsyncConsoleReader::stop() {
 
   m_thread = std::thread();
 }
-
+//----------------------------------------------------------------------------------------------------
 bool AsyncConsoleReader::stopped() const {
   return m_stop;
 }
-
+//----------------------------------------------------------------------------------------------------
 void AsyncConsoleReader::consoleThread() {
 
   while (waitInput()) {
@@ -91,7 +91,7 @@ void AsyncConsoleReader::consoleThread() {
     }
   }
 }
-
+//----------------------------------------------------------------------------------------------------
 bool AsyncConsoleReader::waitInput() {
 #ifndef _WIN32
   int stdin_fileno = ::fileno(stdin);
@@ -130,7 +130,7 @@ bool AsyncConsoleReader::waitInput() {
 ConsoleHandler::~ConsoleHandler() {
   stop();
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::start(bool startThread, const std::string& prompt, Console::Color promptColor) {
   m_prompt = prompt;
   m_promptColor = promptColor;
@@ -142,20 +142,20 @@ void ConsoleHandler::start(bool startThread, const std::string& prompt, Console:
     handlerThread();
   }
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::stop() {
   requestStop();
   wait();
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::pause() {
   m_consoleReader.pause();
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::unpause() {
   m_consoleReader.unpause();
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::wait() {
 
   try {
@@ -166,11 +166,11 @@ void ConsoleHandler::wait() {
     std::cerr << "Exception in ConsoleHandler::wait - " << e.what() << std::endl;
   }
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::requestStop() {
   m_consoleReader.stop();
 }
-
+//----------------------------------------------------------------------------------------------------
 std::string ConsoleHandler::getUsage() const {
 
   if (m_handlers.empty()) {
@@ -189,11 +189,11 @@ std::string ConsoleHandler::getUsage() const {
 
   return ss.str();
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::setHandler(const std::string& command, const ConsoleCommandHandler& handler, const std::string& usage) {
   m_handlers[command] = std::make_pair(handler, usage);
 }
-
+//----------------------------------------------------------------------------------------------------
 bool ConsoleHandler::runCommand(const std::vector<std::string>& cmdAndArgs) {
   if (cmdAndArgs.size() == 0) {
     return false;
@@ -211,7 +211,7 @@ bool ConsoleHandler::runCommand(const std::vector<std::string>& cmdAndArgs) {
   hIter->second.first(args);
   return true;
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::handleCommand(const std::string& cmd) {
   bool parseString = false;
   std::string arg;
@@ -248,7 +248,7 @@ void ConsoleHandler::handleCommand(const std::string& cmd) {
 
   runCommand(argList);
 }
-
+//----------------------------------------------------------------------------------------------------
 void ConsoleHandler::handlerThread() {
   std::string line;
 
