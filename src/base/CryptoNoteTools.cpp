@@ -15,17 +15,17 @@ bool toBinaryArray(const BinaryArray& object, BinaryArray& binaryArray) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void getBinaryArrayHash(const BinaryArray& binaryArray, Crypto::Hash& hash) {
   cn_fast_hash(binaryArray.data(), binaryArray.size(), hash);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Crypto::Hash getBinaryArrayHash(const BinaryArray& binaryArray) {
   Crypto::Hash hash;
   getBinaryArrayHash(binaryArray, hash);
   return hash;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint64_t getInputAmount(const Transaction& transaction) {
   uint64_t amount = 0;
   for (auto& input : transaction.inputs) {
@@ -38,7 +38,7 @@ uint64_t getInputAmount(const Transaction& transaction) {
 
   return amount;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::vector<uint64_t> getInputsAmounts(const Transaction& transaction) {
   std::vector<uint64_t> inputsAmounts;
   inputsAmounts.reserve(transaction.inputs.size());
@@ -53,7 +53,7 @@ std::vector<uint64_t> getInputsAmounts(const Transaction& transaction) {
 
   return inputsAmounts;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint64_t getOutputAmount(const Transaction& transaction) {
   uint64_t amount = 0;
   for (auto& output : transaction.outputs) {
@@ -62,7 +62,7 @@ uint64_t getOutputAmount(const Transaction& transaction) {
 
   return amount;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void decomposeAmount(uint64_t amount, uint64_t dustThreshold, std::vector<uint64_t>& decomposedAmounts) {
   decompose_amount_into_digits(amount, dustThreshold,
     [&](uint64_t amount) {
@@ -73,5 +73,5 @@ void decomposeAmount(uint64_t amount, uint64_t dustThreshold, std::vector<uint64
   }
   );
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

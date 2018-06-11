@@ -37,7 +37,7 @@ size_t getSignaturesCount(const TransactionInput& input) {
 
   return boost::apply_visitor(txin_signature_size_visitor(), input);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 struct BinaryVariantTagGetter: boost::static_visitor<uint8_t> {
   uint8_t operator()(const CryptoNote::BaseInput) { return  0xff; }
   uint8_t operator()(const CryptoNote::KeyInput) { return  0x2; }
@@ -47,7 +47,7 @@ struct BinaryVariantTagGetter: boost::static_visitor<uint8_t> {
   uint8_t operator()(const CryptoNote::Transaction) { return  0xcc; }
   uint8_t operator()(const CryptoNote::Block) { return  0xbb; }
 };
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 struct VariantSerializer : boost::static_visitor<> {
   VariantSerializer(CryptoNote::ISerializer& serializer, const std::string& name) : s(serializer), name(name) {}
 
@@ -57,7 +57,7 @@ struct VariantSerializer : boost::static_visitor<> {
   CryptoNote::ISerializer& s;
   std::string name;
 };
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNote::TransactionInput& in) {
   switch(tag) {
   case 0xff: {
@@ -82,7 +82,7 @@ void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNot
     throw std::runtime_error("Unknown variant tag");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNote::TransactionOutputTarget& out) {
   switch(tag) {
   case 0x2: {
@@ -101,12 +101,12 @@ void getVariantValue(CryptoNote::ISerializer& serializer, uint8_t tag, CryptoNot
     throw std::runtime_error("Unknown variant tag");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 template <typename T>
 bool serializePod(T& v, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializer.binary(&v, sizeof(v), name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool serializeVarintVector(std::vector<uint32_t>& vector, CryptoNote::ISerializer& serializer, Common::StringView name) {
   size_t size = vector.size();
   
@@ -124,7 +124,7 @@ bool serializeVarintVector(std::vector<uint32_t>& vector, CryptoNote::ISerialize
   serializer.endArray();
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
 
 namespace Crypto {
@@ -132,35 +132,35 @@ namespace Crypto {
 bool serialize(PublicKey& pubKey, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializePod(pubKey, name, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool serialize(SecretKey& secKey, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializePod(secKey, name, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool serialize(Hash& h, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializePod(h, name, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool serialize(KeyImage& keyImage, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializePod(keyImage, name, serializer);
 }
-
-bool serialize(chacha8_iv& chacha8, Common::StringView name, CryptoNote::ISerializer& serializer) {
-  return serializePod(chacha8, name, serializer);
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+bool serialize(chacha8_iv& chacha, Common::StringView name, CryptoNote::ISerializer& serializer) {
+  return serializePod(chacha, name, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool serialize(Signature& sig, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializePod(sig, name, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool serialize(EllipticCurveScalar& ecScalar, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializePod(ecScalar, name, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool serialize(EllipticCurvePoint& ecPoint, Common::StringView name, CryptoNote::ISerializer& serializer) {
   return serializePod(ecPoint, name, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
 
 namespace CryptoNote {
@@ -177,7 +177,7 @@ void serialize(TransactionPrefix& txP, ISerializer& serializer) {
   serializer(txP.outputs, "vout");
   serializeAsBinary(txP.extra, "extra", serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(Transaction& tx, ISerializer& serializer) {
   serialize(static_cast<TransactionPrefix&>(tx), serializer);
 
@@ -224,7 +224,7 @@ void serialize(Transaction& tx, ISerializer& serializer) {
   }
 //  serializer.endArray();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(TransactionInput& in, ISerializer& serializer) {
   if (serializer.type() == ISerializer::OUTPUT) {
     BinaryVariantTagGetter tagGetter;
@@ -240,29 +240,29 @@ void serialize(TransactionInput& in, ISerializer& serializer) {
     getVariantValue(serializer, tag, in);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(BaseInput& gen, ISerializer& serializer) {
   serializer(gen.blockIndex, "height");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(KeyInput& key, ISerializer& serializer) {
   serializer(key.amount, "amount");
   serializeVarintVector(key.outputIndexes, serializer, "key_offsets");
   serializer(key.keyImage, "k_image");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(MultisignatureInput& multisignature, ISerializer& serializer) {
   serializer(multisignature.amount, "amount");
   serializer(multisignature.signatureCount, "signatures");
   serializer(multisignature.outputIndex, "outputIndex");
   serializer(multisignature.term, "term");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(TransactionOutput& output, ISerializer& serializer) {
   serializer(output.amount, "amount");
   serializer(output.target, "target");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(TransactionOutputTarget& output, ISerializer& serializer) {
   if (serializer.type() == ISerializer::OUTPUT) {
     BinaryVariantTagGetter tagGetter;
@@ -278,17 +278,17 @@ void serialize(TransactionOutputTarget& output, ISerializer& serializer) {
     getVariantValue(serializer, tag, output);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(KeyOutput& key, ISerializer& serializer) {
   serializer(key.key, "key");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(MultisignatureOutput& multisignature, ISerializer& serializer) {
   serializer(multisignature.keys, "keys");
   serializer(multisignature.requiredSignatureCount, "required_signatures");
   serializer(multisignature.term, "term");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(ParentBlockSerializer& pbs, ISerializer& serializer) {
   serializer(pbs.m_parentBlock.majorVersion, "majorVersion");
 
@@ -360,7 +360,7 @@ void serialize(ParentBlockSerializer& pbs, ISerializer& serializer) {
     serializer(hash, "");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serializeBlockHeader(BlockHeader& header, ISerializer& serializer) {
   serializer(header.majorVersion, "major_version");
   if (header.majorVersion > NEXT_BLOCK_MAJOR_0) {
@@ -378,11 +378,11 @@ void serializeBlockHeader(BlockHeader& header, ISerializer& serializer) {
     throw std::runtime_error("Wrong major version");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(BlockHeader& header, ISerializer& serializer) {
   serializeBlockHeader(header, serializer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(Block& block, ISerializer& serializer) {
   serializeBlockHeader(block, serializer);
 
@@ -394,25 +394,25 @@ void serialize(Block& block, ISerializer& serializer) {
   serializer(block.baseTransaction, "miner_tx");
   serializer(block.transactionHashes, "tx_hashes");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(AccountPublicAddress& address, ISerializer& serializer) {
   serializer(address.spendPublicKey, "m_spend_public_key");
   serializer(address.viewPublicKey, "m_view_public_key");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(AccountKeys& keys, ISerializer& s) {
   s(keys.address, "m_account_address");
   s(keys.spendSecretKey, "m_spend_secret_key");
   s(keys.viewSecretKey, "m_view_secret_key");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void doSerialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
   uint64_t depth = static_cast<uint64_t>(tag.depth);
   serializer(depth, "depth");
   tag.depth = static_cast<size_t>(depth);
   serializer(tag.merkleRoot, "merkle_root");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
   if (serializer.type() == ISerializer::OUTPUT) {
     std::string field;
@@ -428,11 +428,11 @@ void serialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
     doSerialize(tag, input);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serialize(KeyPair& keyPair, ISerializer& serializer) {
   serializer(keyPair.secretKey, "secret_key");
   serializer(keyPair.publicKey, "public_key");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 
 } //namespace CryptoNote

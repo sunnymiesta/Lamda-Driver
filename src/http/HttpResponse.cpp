@@ -20,7 +20,7 @@ const char* getStatusString(CryptoNote::HttpResponse::HTTP_STATUS status) {
 
   return ""; //unaccessible
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 const char* getErrorBody(CryptoNote::HttpResponse::HTTP_STATUS status) {
   switch (status) {
   case CryptoNote::HttpResponse::STATUS_401:
@@ -35,7 +35,7 @@ const char* getErrorBody(CryptoNote::HttpResponse::HTTP_STATUS status) {
 
   return ""; //unaccessible
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //namespace
 
 namespace CryptoNote {
@@ -45,7 +45,7 @@ HttpResponse::HttpResponse() {
   headers["Server"] = "CryptoNote-based HTTP server";
   headers["Access-Control-Allow-Origin"] = "*";
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpResponse::setStatus(HTTP_STATUS s) {
   status = s;
 
@@ -53,11 +53,11 @@ void HttpResponse::setStatus(HTTP_STATUS s) {
     setBody(getErrorBody(status));
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpResponse::addHeader(const std::string& name, const std::string& value) {
   headers[name] = value;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpResponse::setBody(const std::string& b) {
   body = b;
   if (!body.empty()) {
@@ -66,7 +66,7 @@ void HttpResponse::setBody(const std::string& b) {
     headers.erase("Content-Length");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::ostream& HttpResponse::printHttpResponse(std::ostream& os) const {
   os << "HTTP/1.1 " << getStatusString(status) << "\r\n";
 
@@ -81,5 +81,5 @@ std::ostream& HttpResponse::printHttpResponse(std::ostream& os) const {
 
   return os;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //namespace CryptoNote

@@ -3,6 +3,7 @@
 #include <ostream>
 #include <string>
 #include <map>
+#include "android.h"
 
 namespace CryptoNote {
 

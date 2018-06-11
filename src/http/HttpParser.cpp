@@ -15,7 +15,7 @@ void throwIfNotGood(std::istream& stream) {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
 
 namespace CryptoNote {
@@ -30,8 +30,7 @@ HttpResponse::HTTP_STATUS HttpParser::parseResponseStatusFromString(const std::s
 
   return CryptoNote::HttpResponse::STATUS_200; //unaccessible
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpParser::receiveRequest(std::istream& stream, HttpRequest& request) {
   readWord(stream, request.method);
   readWord(stream, request.url);
@@ -47,8 +46,7 @@ void HttpParser::receiveRequest(std::istream& stream, HttpRequest& request) {
     readBody(stream, request.body, bodyLen);
   }
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpParser::receiveResponse(std::istream& stream, HttpResponse& response) {
   std::string httpVersion;
   readWord(stream, httpVersion);
@@ -97,8 +95,7 @@ void HttpParser::receiveResponse(std::istream& stream, HttpResponse& response) {
 
   response.setBody(body);
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpParser::readWord(std::istream& stream, std::string& word) {
   char c;
 
@@ -117,7 +114,7 @@ void HttpParser::readWord(std::istream& stream, std::string& word) {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpParser::readHeaders(std::istream& stream, HttpRequest::Headers& headers) {
   std::string name;
   std::string value;
@@ -130,7 +127,7 @@ void HttpParser::readHeaders(std::istream& stream, HttpRequest::Headers& headers
 
   headers[name] = value; //use insert
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool HttpParser::readHeader(std::istream& stream, std::string& name, std::string& value) {
   char c;
   bool isName = true;
@@ -183,7 +180,7 @@ bool HttpParser::readHeader(std::istream& stream, std::string& name, std::string
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t HttpParser::getBodyLen(const HttpRequest::Headers& headers) {
   auto it = headers.find("content-length");
   if (it != headers.end()) {
@@ -193,7 +190,7 @@ size_t HttpParser::getBodyLen(const HttpRequest::Headers& headers) {
 
   return 0;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void HttpParser::readBody(std::istream& stream, std::string& body, const size_t bodyLen) {
   size_t read = 0;
 
@@ -204,5 +201,5 @@ void HttpParser::readBody(std::istream& stream, std::string& body, const size_t 
 
   throwIfNotGood(stream);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

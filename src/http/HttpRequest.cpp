@@ -5,19 +5,19 @@ namespace CryptoNote {
   const std::string& HttpRequest::getMethod() const {
     return method;
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   const std::string& HttpRequest::getUrl() const {
     return url;
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   const HttpRequest::Headers& HttpRequest::getHeaders() const {
     return headers;
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   const std::string& HttpRequest::getBody() const {
     return body;
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   void HttpRequest::addHeader(const std::string& name, const std::string& value) {
     headers[name] = value;
   }
@@ -30,11 +30,11 @@ namespace CryptoNote {
       headers.erase("Content-Length");
     }
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   void HttpRequest::setUrl(const std::string& u) {
     url = u;
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   std::ostream& HttpRequest::printHttpRequest(std::ostream& os) const {
     os << "POST " << url << " HTTP/1.1\r\n";
     auto host = headers.find("Host");
@@ -53,4 +53,5 @@ namespace CryptoNote {
 
     return os;
   }
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
