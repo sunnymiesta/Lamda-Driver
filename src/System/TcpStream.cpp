@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "TcpStream.h"
 #include <System/TcpConnection.h>
 
@@ -24,11 +7,11 @@ TcpStreambuf::TcpStreambuf(TcpConnection& connection) : connection(connection) {
   setg(&readBuf.front(), &readBuf.front(), &readBuf.front());
   setp(reinterpret_cast<char*>(&writeBuf.front()), reinterpret_cast<char *>(&writeBuf.front() + writeBuf.max_size()));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpStreambuf::~TcpStreambuf() {
   dumpBuffer(true);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::streambuf::int_type TcpStreambuf::overflow(std::streambuf::int_type ch) {
   if (ch == traits_type::eof()) {
     return traits_type::eof();
@@ -44,11 +27,11 @@ std::streambuf::int_type TcpStreambuf::overflow(std::streambuf::int_type ch) {
   pbump(1);
   return ch;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 int TcpStreambuf::sync() {
   return dumpBuffer(true) ? 0 : -1;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::streambuf::int_type TcpStreambuf::underflow() {
   if (gptr() < egptr()) {
     return traits_type::to_int_type(*gptr());
@@ -68,7 +51,7 @@ std::streambuf::int_type TcpStreambuf::underflow() {
   setg(&readBuf.front(), &readBuf.front(), &readBuf.front() + bytesRead);
   return traits_type::to_int_type(*gptr());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool TcpStreambuf::dumpBuffer(bool finalize) {
   try {
     size_t count = pptr() - pbase();
@@ -102,5 +85,5 @@ bool TcpStreambuf::dumpBuffer(bool finalize) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

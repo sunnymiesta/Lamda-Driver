@@ -4,7 +4,7 @@ namespace Common {
 
 StdOutputStream::StdOutputStream(std::ostream& out) : out(out) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t StdOutputStream::writeSome(const void* data, size_t size) {
   out.write(static_cast<const char*>(data), size);
   if (out.bad()) {
@@ -13,5 +13,5 @@ size_t StdOutputStream::writeSome(const void* data, size_t size) {
 
   return size;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

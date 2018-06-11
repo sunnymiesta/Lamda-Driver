@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "MemoryMappedFile.h"
 
 #include <cassert>
@@ -32,40 +15,40 @@ MemoryMappedFile::MemoryMappedFile() :
   m_size(0),
   m_data(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 MemoryMappedFile::~MemoryMappedFile() {
   std::error_code ignore;
   close(ignore);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 const std::string& MemoryMappedFile::path() const {
   assert(isOpened());
 
   return m_path;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint64_t MemoryMappedFile::size() const {
   assert(isOpened());
 
   return m_size;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 const uint8_t* MemoryMappedFile::data() const {
   assert(isOpened());
 
   return m_data;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint8_t* MemoryMappedFile::data() {
   assert(isOpened());
 
   return m_data;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool MemoryMappedFile::isOpened() const {
   return m_data != nullptr;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::create(const std::string& path, uint64_t size, bool overwrite, std::error_code& ec) {
   if (isOpened()) {
     close(ec);
@@ -119,7 +102,7 @@ void MemoryMappedFile::create(const std::string& path, uint64_t size, bool overw
 
   failExitHandler.cancel();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::create(const std::string& path, uint64_t size, bool overwrite) {
   std::error_code ec;
   create(path, size, overwrite, ec);
@@ -127,7 +110,7 @@ void MemoryMappedFile::create(const std::string& path, uint64_t size, bool overw
     throw std::system_error(ec, "MemoryMappedFile::create");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::open(const std::string& path, std::error_code& ec) {
   if (isOpened()) {
     close(ec);
@@ -177,7 +160,7 @@ void MemoryMappedFile::open(const std::string& path, std::error_code& ec) {
 
   failExitHandler.cancel();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::open(const std::string& path) {
   std::error_code ec;
   open(path, ec);
@@ -185,7 +168,7 @@ void MemoryMappedFile::open(const std::string& path) {
     throw std::system_error(ec, "MemoryMappedFile::open");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::rename(const std::string& newPath, std::error_code& ec) {
   assert(isOpened());
 
@@ -197,7 +180,7 @@ void MemoryMappedFile::rename(const std::string& newPath, std::error_code& ec) {
     ec = std::error_code(::GetLastError(), std::system_category());
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::rename(const std::string& newPath) {
   assert(isOpened());
 
@@ -207,7 +190,7 @@ void MemoryMappedFile::rename(const std::string& newPath) {
     throw std::system_error(ec, "MemoryMappedFile::rename");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::close(std::error_code& ec) {
   BOOL result;
   if (m_data != nullptr) {
@@ -248,7 +231,7 @@ void MemoryMappedFile::close(std::error_code& ec) {
 
   ec = std::error_code();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::close() {
   std::error_code ec;
   close(ec);
@@ -256,7 +239,7 @@ void MemoryMappedFile::close() {
     throw std::system_error(ec, "MemoryMappedFile::close");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::flush(uint8_t* data, uint64_t size, std::error_code& ec) {
   assert(isOpened());
 
@@ -271,7 +254,7 @@ void MemoryMappedFile::flush(uint8_t* data, uint64_t size, std::error_code& ec) 
 
   ec = std::error_code(::GetLastError(), std::system_category());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::flush(uint8_t* data, uint64_t size) {
   assert(isOpened());
 
@@ -281,7 +264,7 @@ void MemoryMappedFile::flush(uint8_t* data, uint64_t size) {
     throw std::system_error(ec, "MemoryMappedFile::flush");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MemoryMappedFile::swap(MemoryMappedFile& other) {
   std::swap(m_fileHandle, other.m_fileHandle);
   std::swap(m_mappingHandle, other.m_mappingHandle);
@@ -289,5 +272,5 @@ void MemoryMappedFile::swap(MemoryMappedFile& other) {
   std::swap(m_data, other.m_data);
   std::swap(m_size, other.m_size);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

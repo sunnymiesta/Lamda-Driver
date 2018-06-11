@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "Timer.h"
 #include <cassert>
 #include <stdexcept>
@@ -31,10 +14,10 @@ namespace System {
 
 Timer::Timer() : dispatcher(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Timer::Timer(Dispatcher& dispatcher) : dispatcher(&dispatcher), context(nullptr), timer(-1) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Timer::Timer(Timer&& other) : dispatcher(other.dispatcher) {
   if (other.dispatcher != nullptr) {
     assert(other.context == nullptr);
@@ -43,11 +26,11 @@ Timer::Timer(Timer&& other) : dispatcher(other.dispatcher) {
     other.dispatcher = nullptr;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Timer::~Timer() {
   assert(dispatcher == nullptr || context == nullptr);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Timer& Timer::operator=(Timer&& other) {
   assert(dispatcher == nullptr || context == nullptr);
   dispatcher = other.dispatcher;
@@ -61,7 +44,7 @@ Timer& Timer::operator=(Timer&& other) {
 
   return *this;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Timer::sleep(std::chrono::nanoseconds duration) {
   assert(dispatcher != nullptr);
   assert(context == nullptr);
@@ -138,5 +121,5 @@ void Timer::sleep(std::chrono::nanoseconds duration) {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

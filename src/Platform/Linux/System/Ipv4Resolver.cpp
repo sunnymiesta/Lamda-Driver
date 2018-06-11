@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "Ipv4Resolver.h"
 #include <cassert>
 #include <random>
@@ -31,19 +14,19 @@ namespace System {
 
 Ipv4Resolver::Ipv4Resolver() : dispatcher(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Ipv4Resolver::Ipv4Resolver(Dispatcher& dispatcher) : dispatcher(&dispatcher) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Ipv4Resolver::Ipv4Resolver(Ipv4Resolver&& other) : dispatcher(other.dispatcher) {
   if (dispatcher != nullptr) {
     other.dispatcher = nullptr;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Ipv4Resolver::~Ipv4Resolver() {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Ipv4Resolver& Ipv4Resolver::operator=(Ipv4Resolver&& other) {
   dispatcher = other.dispatcher;
   if (dispatcher != nullptr) {
@@ -52,7 +35,7 @@ Ipv4Resolver& Ipv4Resolver::operator=(Ipv4Resolver&& other) {
 
   return *this;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Ipv4Address Ipv4Resolver::resolve(const std::string& host) {
   assert(dispatcher != nullptr);
   if (dispatcher->interrupted()) {
@@ -82,5 +65,5 @@ Ipv4Address Ipv4Resolver::resolve(const std::string& host) {
   freeaddrinfo(addressInfo);
   return address;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

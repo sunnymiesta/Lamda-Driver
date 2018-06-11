@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "Ipv4Address.h"
 #include <stdexcept>
 #include "android.h"
@@ -57,7 +40,7 @@ uint8_t readUint8(const std::string& source, size_t& offset) {
 
 Ipv4Address::Ipv4Address(uint32_t value) : value(value) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Ipv4Address::Ipv4Address(const std::string& dottedDecimal) {
   size_t offset = 0;
   value = readUint8(dottedDecimal, offset);
@@ -83,19 +66,19 @@ Ipv4Address::Ipv4Address(const std::string& dottedDecimal) {
     throw std::runtime_error("Invalid Ipv4 address string");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool Ipv4Address::operator!=(const Ipv4Address& other) const {
   return value != other.value;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool Ipv4Address::operator==(const Ipv4Address& other) const {
   return value == other.value;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint32_t Ipv4Address::getValue() const {
   return value;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string Ipv4Address::toDottedDecimal() const {
   std::string result;
   result += std::to_string(value >> 24);
@@ -107,12 +90,12 @@ std::string Ipv4Address::toDottedDecimal() const {
   result += std::to_string(value & 255);
   return result;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool Ipv4Address::isLoopback() const {
   // 127.0.0.0/8
   return (value & 0xff000000) == (127 << 24);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool Ipv4Address::isPrivate() const {
   return
     // 10.0.0.0/8
@@ -122,5 +105,5 @@ bool Ipv4Address::isPrivate() const {
     // 192.168.0.0/16
     (value & 0xffff0000) == ((192 << 24) | (168 << 16));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

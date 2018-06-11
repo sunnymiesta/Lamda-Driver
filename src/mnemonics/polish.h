@@ -1,14 +1,3 @@
-// Copyright (c) 2017-2018, Karbo developers
-/*!
- *  file Polish.h
- *
- *  brief Polish word list and map.
- *
- *  Created by Karbovanets contributor Lastik, edited by Aiwe
- *  Based on https://pl.wiktionary.org/wiki/Kategoria:Listy_frekwencyjne
- *
- */
-
 #pragma once
 
 #include "language_base.h"

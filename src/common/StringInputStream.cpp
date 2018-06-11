@@ -5,7 +5,7 @@ namespace Common {
 
 StringInputStream::StringInputStream(const std::string& in) : in(in), offset(0) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t StringInputStream::readSome(void* data, size_t size) {
   if (size > in.size() - offset) {
     size = in.size() - offset;
@@ -15,5 +15,5 @@ size_t StringInputStream::readSome(void* data, size_t size) {
   offset += size;
   return size;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

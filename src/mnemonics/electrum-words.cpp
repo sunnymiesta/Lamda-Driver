@@ -1,42 +1,3 @@
-// Copyright (c) 2014-2017, The Monero Project
-// Copyright (c) 2017-2018, Karbo developers
-// 
-// All rights reserved.
-// 
-// Redistribution and use in source and binary forms, with or without modification, are
-// permitted provided that the following conditions are met:
-// 
-// 1. Redistributions of source code must retain the above copyright notice, this list of
-//    conditions and the following disclaimer.
-// 
-// 2. Redistributions in binary form must reproduce the above copyright notice, this list
-//    of conditions and the following disclaimer in the documentation and/or other
-//    materials provided with the distribution.
-// 
-// 3. Neither the name of the copyright holder nor the names of its contributors may be
-//    used to endorse or promote products derived from this software without specific
-//    prior written permission.
-// 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
-// THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
-// THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-/*!
- * \file electrum-words.cpp
- * 
- * \brief Mnemonic seed generation and wallet restoration from them.
- * 
- * This file and its header file are for translating Electrum-style word lists
- * into their equivalent byte representations for cross-compatibility with
- * that method of "backing up" one's wallet keys.
- */
-
 #include <string>
 #include <cassert>
 #include <map>
@@ -50,7 +11,7 @@
 #include <boost/crc.hpp>
 #include <boost/filesystem.hpp>
 #include "crypto/crypto.h"  // for declaration of Crypto::SecretKey
-#include "common/Lazy.h"
+#include "Lazy.h"
 #include "mnemonics/electrum-words.h"
 
 #include "chinese_simplified.h"
@@ -81,7 +42,7 @@ const std::string Dutch     ::c_name = "Nederlands";
 const std::string Japanese  ::c_name = "日本語";
 const std::string ChineseSim::c_name = "简体中文 (中国)";
 const std::string Russian   ::c_name = "русский язык";
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 typedef std::unordered_map<std::string, Lazy<std::shared_ptr<Base>>> LanguageMap;
 const static LanguageMap c_languageMap =
 {
@@ -98,14 +59,13 @@ const static LanguageMap c_languageMap =
 	{ ChineseSim::c_name, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<ChineseSim>(); }) },
 	{ Russian   ::c_name, Lazy<std::shared_ptr<Base>>([](){ return std::make_shared<Russian>();    }) },
 };
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //Language
 
 namespace {
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint32_t create_checksum_index(const std::vector<std::string> &word_list, uint32_t unique_prefix_length);
 bool checksum_test(std::vector<std::string> seed, uint32_t unique_prefix_length);
-
 /*!
 * \brief Finds the word list that contains the seed words and puts the indices
 *        where matches occured in matched_indices.
@@ -115,6 +75,7 @@ bool checksum_test(std::vector<std::string> seed, uint32_t unique_prefix_length)
 * \param  language        Language instance pointer to write to after it is found.
 * \return                 true if all the words were present in some language false if not.
 */
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool find_seed_language(const std::vector<std::string> &seed, bool has_checksum, 
 	std::vector<uint32_t> &matched_indices, Language::Base **language)
 {
@@ -189,7 +150,7 @@ bool find_seed_language(const std::vector<std::string> &seed, bool has_checksum,
 
 	return false;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 /*!
 * \brief Creates a checksum index in the word list array on the list of words.
 * \param  word_list            Vector of words
@@ -211,7 +172,7 @@ uint32_t create_checksum_index(const std::vector<std::string> &word_list, uint32
 	result.process_bytes(trimmed_words.data(), trimmed_words.length());
 	return result.checksum() % Crypto::ElectrumWords::seed_length;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 /*!
 * \brief Does the checksum test on the seed passed.
 * \param seed                  Vector of seed words
@@ -232,7 +193,7 @@ bool checksum_test(std::vector<std::string> seed, uint32_t unique_prefix_length)
 		Language::utf8prefix(last_word, unique_prefix_length) : last_word;
 	return trimmed_checksum == trimmed_last_word;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //(unnamed)
 
 /*!
@@ -242,7 +203,7 @@ bool checksum_test(std::vector<std::string> seed, uint32_t unique_prefix_length)
  */
 namespace Crypto {
 namespace ElectrumWords {
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 /*!
 * \brief Converts seed words to bytes (secret key).
 * \param  words           String containing the words separated by spaces.
@@ -305,7 +266,7 @@ bool words_to_bytes(std::string words, Crypto::SecretKey& dst, std::string &lang
 
 	return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 /*!
 * \brief Converts bytes (secret key) to seed words.
 * \param  src           Secret key
@@ -354,7 +315,7 @@ bool bytes_to_words(const Crypto::SecretKey& src, std::string& words, const std:
 	words += (' ' + words_store[create_checksum_index(words_store, language->get_unique_prefix_length())]);
 	return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 /*!
 * \brief Gets a list of seed languages that are supported.
 * \param languages The vector is set to the list of languages.
@@ -367,7 +328,7 @@ void get_language_list(std::vector<std::string> &languages)
 	std::transform(itBegin, itEnd, std::back_inserter(languages), 
 		[](const Language::LanguageMap::value_type& pair){ return pair.first; });
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 /*!
 * \brief Tells if the seed passed is an old style seed or not.
 * \param  seed The seed to check (a space delimited concatenated word list)
@@ -380,6 +341,6 @@ bool get_is_old_style_seed(std::string seed)
     boost::split(word_list, seed, boost::is_any_of(" "), boost::token_compress_on);
     return word_list.size() != (seed_length + 1);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //ElectrumWords
 } //Crypto

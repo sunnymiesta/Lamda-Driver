@@ -5,7 +5,7 @@
 
 #include "CryptoNoteConfig.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <shlobj.h>
 #include <strsafe.h>
@@ -241,6 +241,7 @@ namespace Tools
       return pszOS;
     }
   }
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 #else
 std::string get_nix_version_display_string()
 {
@@ -251,9 +252,7 @@ std::string get_nix_version_display_string()
   return std::string() + un.sysname + " " + un.version + " " + un.release;
 }
 #endif
-
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   std::string get_os_version_string()
   {
 #ifdef WIN32
@@ -262,9 +261,7 @@ std::string get_nix_version_display_string()
     return get_nix_version_display_string();
 #endif
   }
-
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 #ifdef WIN32
   std::string get_special_folder_path(int nfolder, bool iscreate)
   {
@@ -278,7 +275,7 @@ std::string get_nix_version_display_string()
     return "";
   }
 #endif
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   std::string getDefaultDataDirectory()
   {
     //namespace fs = boost::filesystem;
@@ -289,7 +286,6 @@ std::string get_nix_version_display_string()
     std::string config_folder;
 #ifdef WIN32
     // Windows
-    // config_folder = get_special_folder_path(CSIDL_APPDATA, true) + "/" + CryptoNote::CRYPTONOTE_NAME;
     config_folder = get_special_folder_path(CSIDL_APPDATA, true) + "/" + CryptoNote::CRYPTONOTE_NAME;
 #else
     std::string pathRet;
@@ -310,7 +306,7 @@ std::string get_nix_version_display_string()
 
     return config_folder;
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   bool create_directories_if_necessary(const std::string& path)
   {
     namespace fs = boost::filesystem;
@@ -322,7 +318,7 @@ std::string get_nix_version_display_string()
 
     return fs::create_directories(fs_path, ec);
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   std::error_code replace_file(const std::string& replacement_name, const std::string& replaced_name)
   {
     int code;
@@ -342,10 +338,10 @@ std::string get_nix_version_display_string()
 #endif
     return std::error_code(code, std::system_category());
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   bool directoryExists(const std::string& path) {
     boost::system::error_code ec;
     return boost::filesystem::is_directory(path, ec);
   }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "TcpConnection.h"
 #include <cassert>
 #ifndef WIN32_LEAN_AND_MEAN
@@ -40,7 +23,7 @@ struct TcpConnectionContext : public OVERLAPPED {
 
 TcpConnection::TcpConnection() : dispatcher(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection::TcpConnection(TcpConnection&& other) : dispatcher(other.dispatcher) {
   if (dispatcher != nullptr) {
     assert(other.readContext == nullptr);
@@ -51,7 +34,7 @@ TcpConnection::TcpConnection(TcpConnection&& other) : dispatcher(other.dispatche
     other.dispatcher = nullptr;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection::~TcpConnection() {
   if (dispatcher != nullptr) {
     assert(readContext == nullptr);
@@ -60,7 +43,7 @@ TcpConnection::~TcpConnection() {
     assert(result == 0);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection& TcpConnection::operator=(TcpConnection&& other) {
   if (dispatcher != nullptr) {
     assert(readContext == nullptr);
@@ -82,7 +65,7 @@ TcpConnection& TcpConnection::operator=(TcpConnection&& other) {
 
   return *this;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t TcpConnection::read(uint8_t* data, size_t size) {
   assert(dispatcher != nullptr);
   assert(readContext == nullptr);
@@ -144,7 +127,7 @@ size_t TcpConnection::read(uint8_t* data, size_t size) {
   assert(flags == 0);
   return transferred;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t TcpConnection::write(const uint8_t* data, size_t size) {
   assert(dispatcher != nullptr);
   assert(writeContext == nullptr);
@@ -213,7 +196,7 @@ size_t TcpConnection::write(const uint8_t* data, size_t size) {
   assert(flags == 0);
   return transferred;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::pair<Ipv4Address, uint16_t> TcpConnection::getPeerAddressAndPort() const {
   sockaddr_in address;
   int size = sizeof(address);
@@ -224,8 +207,8 @@ std::pair<Ipv4Address, uint16_t> TcpConnection::getPeerAddressAndPort() const {
   assert(size == sizeof(sockaddr_in));
   return std::make_pair(Ipv4Address(htonl(address.sin_addr.S_un.S_addr)), htons(address.sin_port));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection::TcpConnection(Dispatcher& dispatcher, size_t connection) : dispatcher(&dispatcher), connection(connection), readContext(nullptr), writeContext(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

@@ -11,7 +11,7 @@ const char NATIVE_PATH_SEPARATOR = '\\';
 const char NATIVE_PATH_SEPARATOR = '/';
 #endif
 
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string::size_type findExtensionPosition(const std::string& filename) {
   auto pos = filename.rfind('.');
   
@@ -24,11 +24,11 @@ std::string::size_type findExtensionPosition(const std::string& filename) {
 
   return pos;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } // anonymous namespace
 
 namespace Common {
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string NativePathToGeneric(const std::string& nativePath) {
   if (GENERIC_PATH_SEPARATOR == NATIVE_PATH_SEPARATOR) {
     return nativePath;
@@ -37,7 +37,7 @@ std::string NativePathToGeneric(const std::string& nativePath) {
   std::replace(genericPath.begin(), genericPath.end(), NATIVE_PATH_SEPARATOR, GENERIC_PATH_SEPARATOR);
   return genericPath;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string GetPathDirectory(const std::string& path) {
   auto slashPos = path.rfind(GENERIC_PATH_SEPARATOR);
   if (slashPos == std::string::npos) {
@@ -45,7 +45,7 @@ std::string GetPathDirectory(const std::string& path) {
   }
   return path.substr(0, slashPos);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string GetPathFilename(const std::string& path) {
   auto slashPos = path.rfind(GENERIC_PATH_SEPARATOR);
   if (slashPos == std::string::npos) {
@@ -53,20 +53,20 @@ std::string GetPathFilename(const std::string& path) {
   }
   return path.substr(slashPos + 1);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void SplitPath(const std::string& path, std::string& directory, std::string& filename) {
   directory = GetPathDirectory(path);
   filename = GetPathFilename(path);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string CombinePath(const std::string& path1, const std::string& path2) {
   return path1 + GENERIC_PATH_SEPARATOR + path2;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string ReplaceExtenstion(const std::string& path, const std::string& extension) {
   return RemoveExtension(path) + extension;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string GetExtension(const std::string& path) {
   auto pos = findExtensionPosition(path);
   if (pos != std::string::npos) {
@@ -74,7 +74,7 @@ std::string GetExtension(const std::string& path) {
   }
   return std::string();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string RemoveExtension(const std::string& filename) { 
   auto pos = findExtensionPosition(filename);
 
@@ -84,11 +84,10 @@ std::string RemoveExtension(const std::string& filename) {
 
   return filename.substr(0, pos);
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool HasParentPath(const std::string& path) {
   return path.find(GENERIC_PATH_SEPARATOR) != std::string::npos;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 
 }

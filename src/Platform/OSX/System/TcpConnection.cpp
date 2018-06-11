@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "TcpConnection.h"
 #include <cassert>
 
@@ -33,7 +16,7 @@ namespace System {
 
 TcpConnection::TcpConnection() : dispatcher(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection::TcpConnection(TcpConnection&& other) : dispatcher(other.dispatcher) {
   if (other.dispatcher != nullptr) {
     assert(other.readContext == nullptr);
@@ -44,7 +27,7 @@ TcpConnection::TcpConnection(TcpConnection&& other) : dispatcher(other.dispatche
     other.dispatcher = nullptr;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection::~TcpConnection() {
   if (dispatcher != nullptr) {
     assert(readContext == nullptr);
@@ -53,7 +36,7 @@ TcpConnection::~TcpConnection() {
     assert(result != -1);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection& TcpConnection::operator=(TcpConnection&& other) {
   if (dispatcher != nullptr) {
     assert(readContext == nullptr);
@@ -75,7 +58,7 @@ TcpConnection& TcpConnection::operator=(TcpConnection&& other) {
 
   return *this;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t TcpConnection::read(uint8_t* data, size_t size) {
   assert(dispatcher != nullptr);
   assert(readContext == nullptr);
@@ -142,7 +125,7 @@ size_t TcpConnection::read(uint8_t* data, size_t size) {
   assert(transferred <= static_cast<ssize_t>(size));
   return transferred;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t TcpConnection::write(const uint8_t* data, size_t size) {
   assert(dispatcher != nullptr);
   assert(writeContext == nullptr);
@@ -217,7 +200,7 @@ size_t TcpConnection::write(const uint8_t* data, size_t size) {
   assert(transferred <= static_cast<ssize_t>(size));
   return transferred;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::pair<Ipv4Address, uint16_t> TcpConnection::getPeerAddressAndPort() const {
   sockaddr_in addr;
   socklen_t size = sizeof(addr);
@@ -228,12 +211,12 @@ std::pair<Ipv4Address, uint16_t> TcpConnection::getPeerAddressAndPort() const {
   assert(size == sizeof(sockaddr_in));
   return std::make_pair(Ipv4Address(htonl(addr.sin_addr.s_addr)), htons(addr.sin_port));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection::TcpConnection(Dispatcher& dispatcher, int socket) : dispatcher(&dispatcher), connection(socket), readContext(nullptr), writeContext(nullptr) {
   int val = 1;
   if (setsockopt(connection, SOL_SOCKET, SO_NOSIGPIPE, (void*)&val, sizeof val) == -1) {
     throw std::runtime_error("TcpConnection::TcpConnection, setsockopt failed, " + lastErrorMessage());
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

@@ -24,22 +24,22 @@ const uint8_t characterValues[256] = {
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string asString(const void* data, size_t size) {
   return std::string(static_cast<const char*>(data), size);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string asString(const std::vector<uint8_t>& data) {
   return std::string(reinterpret_cast<const char*>(data.data()), data.size());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::vector<uint8_t> asBinaryArray(const std::string& data) {
   auto dataPtr = reinterpret_cast<const uint8_t*>(data.data());
   return std::vector<uint8_t>(dataPtr, dataPtr + data.size());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint8_t fromHex(char character) {
   uint8_t value = characterValues[static_cast<unsigned char>(character)];
   if (value > 0x0f) {
@@ -48,7 +48,7 @@ uint8_t fromHex(char character) {
 
   return value;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool fromHex(char character, uint8_t& value) {
   if (characterValues[static_cast<unsigned char>(character)] > 0x0f) {
     return false;
@@ -57,7 +57,7 @@ bool fromHex(char character, uint8_t& value) {
   value = characterValues[static_cast<unsigned char>(character)];
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t fromHex(const std::string& text, void* data, size_t bufferSize) {
   if ((text.size() & 1) != 0) {
     throw std::runtime_error("fromHex: invalid string size");
@@ -73,7 +73,7 @@ size_t fromHex(const std::string& text, void* data, size_t bufferSize) {
 
   return text.size() >> 1;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool fromHex(const std::string& text, void* data, size_t bufferSize, size_t& size) {
   if ((text.size() & 1) != 0) {
     return false;
@@ -100,7 +100,7 @@ bool fromHex(const std::string& text, void* data, size_t bufferSize, size_t& siz
   size = text.size() >> 1;
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::vector<uint8_t> fromHex(const std::string& text) {
   if ((text.size() & 1) != 0) {
     throw std::runtime_error("fromHex: invalid string size");
@@ -113,7 +113,7 @@ std::vector<uint8_t> fromHex(const std::string& text) {
 
   return data;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool fromHex(const std::string& text, std::vector<uint8_t>& data) {
   if ((text.size() & 1) != 0) {
     return false;
@@ -135,7 +135,7 @@ bool fromHex(const std::string& text, std::vector<uint8_t>& data) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string toHex(const void* data, size_t size) {
   std::string text;
   for (size_t i = 0; i < size; ++i) {
@@ -145,14 +145,14 @@ std::string toHex(const void* data, size_t size) {
 
   return text;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void toHex(const void* data, size_t size, std::string& text) {
   for (size_t i = 0; i < size; ++i) {
     text += "0123456789abcdef"[static_cast<const uint8_t*>(data)[i] >> 4];
     text += "0123456789abcdef"[static_cast<const uint8_t*>(data)[i] & 15];
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string toHex(const std::vector<uint8_t>& data) {
   std::string text;
   for (size_t i = 0; i < data.size(); ++i) {
@@ -162,14 +162,14 @@ std::string toHex(const std::vector<uint8_t>& data) {
 
   return text;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void toHex(const std::vector<uint8_t>& data, std::string& text) {
   for (size_t i = 0; i < data.size(); ++i) {
     text += "0123456789abcdef"[data[i] >> 4];
     text += "0123456789abcdef"[data[i] & 15];
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string extract(std::string& text, char delimiter) {
   size_t delimiterPosition = text.find(delimiter);
   std::string subText;
@@ -182,7 +182,7 @@ std::string extract(std::string& text, char delimiter) {
 
   return subText;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string extract(const std::string& text, char delimiter, size_t& offset) {
   size_t delimiterPosition = text.find(delimiter, offset);
   if (delimiterPosition != std::string::npos) {
@@ -193,20 +193,20 @@ std::string extract(const std::string& text, char delimiter, size_t& offset) {
     return text.substr(offset);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 namespace {
 
 static const std::string base64chars =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   "abcdefghijklmnopqrstuvwxyz"
   "0123456789+/";
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool is_base64(unsigned char c) {
   return (isalnum(c) || (c == '+') || (c == '/'));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string base64Decode(std::string const& encoded_string) {
   size_t in_len = encoded_string.size();
   size_t i = 0;
@@ -247,8 +247,7 @@ std::string base64Decode(std::string const& encoded_string) {
 
   return ret;
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool loadFileToString(const std::string& filepath, std::string& buf) {
   try {
     std::ifstream fstream;
@@ -268,7 +267,7 @@ bool loadFileToString(const std::string& filepath, std::string& buf) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool saveStringToFile(const std::string& filepath, const std::string& buf) {
   try {
     std::ofstream fstream;
@@ -281,8 +280,7 @@ bool saveStringToFile(const std::string& filepath, const std::string& buf) {
 
   return true;
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string ipAddressToString(uint32_t ip) {
   uint8_t bytes[4];
   bytes[0] = ip & 0xFF;
@@ -295,7 +293,22 @@ std::string ipAddressToString(uint32_t ip) {
 
   return std::string(buf);
 }
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+uint32_t stringToIpAddress(std::string addr) {
+  uint32_t v[4];
+  if (sscanf(addr.c_str(), "%d.%d.%d.%d", &v[0], &v[1], &v[2], &v[3]) != 4) {
+	  return false;
+  }
 
+  for (int i = 0; i < 4; ++i) {
+    if (v[i] > 0xff) {
+      return false;
+    }
+  }
+
+  return ((v[3] << 24) | (v[2] << 16) | (v[1] << 8) | v[0]);
+}
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool parseIpAddressAndPort(uint32_t& ip, uint32_t& port, const std::string& addr) {
   uint32_t v[4];
   uint32_t localPort;
@@ -314,7 +327,7 @@ bool parseIpAddressAndPort(uint32_t& ip, uint32_t& port, const std::string& addr
   port = localPort;
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string timeIntervalToString(uint64_t intervalInSeconds) {
   auto tail = intervalInSeconds;
 
@@ -332,9 +345,8 @@ std::string timeIntervalToString(uint64_t intervalInSeconds) {
     ".h" << std::setw(2) << hours <<
     ".m" << std::setw(2) << minutes <<
     ".s" << std::setw(2) << seconds;
- 
+
   return ss.str();
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

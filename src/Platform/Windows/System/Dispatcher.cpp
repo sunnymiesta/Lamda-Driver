@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "Dispatcher.h"
 #include <cassert>
 #include <string>
@@ -38,7 +21,7 @@ struct DispatcherContext : public OVERLAPPED {
 const size_t STACK_SIZE = 16384;
 const size_t RESERVE_STACK_SIZE = 2097152;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Dispatcher::Dispatcher() {
   static_assert(sizeof(CRITICAL_SECTION) == sizeof(Dispatcher::criticalSection), "CRITICAL_SECTION size doesn't fit sizeof(Dispatcher::criticalSection)");
   BOOL result = InitializeCriticalSectionAndSpinCount(reinterpret_cast<LPCRITICAL_SECTION>(criticalSection), 4000);
@@ -87,7 +70,7 @@ Dispatcher::Dispatcher() {
   DeleteCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(criticalSection));
   throw std::runtime_error("Dispatcher::Dispatcher, " + message);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Dispatcher::~Dispatcher() {
   assert(GetCurrentThreadId() == threadId);
   for (NativeContext* context = contextGroup.firstContext; context != nullptr; context = context->groupNext) {
@@ -114,7 +97,7 @@ Dispatcher::~Dispatcher() {
   assert(result == TRUE);
   DeleteCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(criticalSection));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::clear() {
   assert(GetCurrentThreadId() == threadId);
   while (firstReusableContext != nullptr) {
@@ -123,7 +106,7 @@ void Dispatcher::clear() {
     DeleteFiber(fiber);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::dispatch() {
   assert(GetCurrentThreadId() == threadId);
   NativeContext* context;
@@ -189,16 +172,16 @@ void Dispatcher::dispatch() {
     SwitchToFiber(context->fiber);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 NativeContext* Dispatcher::getCurrentContext() const {
   assert(GetCurrentThreadId() == threadId);
   return currentContext;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::interrupt() {
   interrupt(currentContext);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::interrupt(NativeContext* context) {
   assert(GetCurrentThreadId() == threadId);
   assert(context != nullptr);
@@ -211,7 +194,7 @@ void Dispatcher::interrupt(NativeContext* context) {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool Dispatcher::interrupted() {
   if (currentContext->interrupted) {
     currentContext->interrupted = false;
@@ -220,7 +203,7 @@ bool Dispatcher::interrupted() {
 
   return false;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::pushContext(NativeContext* context) {
   assert(GetCurrentThreadId() == threadId);
   assert(context != nullptr);
@@ -234,7 +217,7 @@ void Dispatcher::pushContext(NativeContext* context) {
 
   lastResumingContext = context;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::remoteSpawn(std::function<void()>&& procedure) {
   EnterCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(criticalSection));
   remoteSpawningProcedures.push(std::move(procedure));
@@ -248,7 +231,7 @@ void Dispatcher::remoteSpawn(std::function<void()>&& procedure) {
 
   LeaveCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(criticalSection));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::spawn(std::function<void()>&& procedure) {
   assert(GetCurrentThreadId() == threadId);
   NativeContext* context = &getReusableContext();
@@ -269,7 +252,7 @@ void Dispatcher::spawn(std::function<void()>&& procedure) {
   contextGroup.lastContext = context;
   pushContext(context);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::yield() {
   assert(GetCurrentThreadId() == threadId);
   for (;;) {
@@ -324,16 +307,16 @@ void Dispatcher::yield() {
     dispatch();
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::addTimer(uint64_t time, NativeContext* context) {
   assert(GetCurrentThreadId() == threadId);
   timers.insert(std::make_pair(time, context));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void* Dispatcher::getCompletionPort() const {
   return completionPort;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 NativeContext& Dispatcher::getReusableContext() {
   if (firstReusableContext == nullptr) {
     void* fiber = CreateFiberEx(STACK_SIZE, RESERVE_STACK_SIZE, 0, contextProcedureStatic, this);
@@ -350,13 +333,13 @@ NativeContext& Dispatcher::getReusableContext() {
   firstReusableContext = context->next;
   return *context;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::pushReusableContext(NativeContext& context) {
   context.next = firstReusableContext;
   firstReusableContext = &context;
   --runningContextCount;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::interruptTimer(uint64_t time, NativeContext* context) {
   assert(GetCurrentThreadId() == threadId);
   auto range = timers.equal_range(time);
@@ -369,7 +352,7 @@ void Dispatcher::interruptTimer(uint64_t time, NativeContext* context) {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::contextProcedure() {
   assert(GetCurrentThreadId() == threadId);
   assert(firstReusableContext == nullptr);
@@ -424,9 +407,9 @@ void Dispatcher::contextProcedure() {
     dispatch();
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void __stdcall Dispatcher::contextProcedureStatic(void* context) {
   static_cast<Dispatcher*>(context)->contextProcedure();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

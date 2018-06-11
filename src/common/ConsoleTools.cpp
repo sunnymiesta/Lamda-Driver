@@ -20,7 +20,7 @@ bool isConsoleTty() {
 #endif
   return istty;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void setTextColor(Color color) {
   if (!isConsoleTty()) {
     return;
@@ -56,7 +56,7 @@ void setTextColor(Color color) {
   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), winColors[static_cast<size_t>(color)]);
 
 #else
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   static const char* ansiColors[] = {
     // default
     "\033[0m",
@@ -83,5 +83,5 @@ void setTextColor(Color color) {
 #endif
 
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }}

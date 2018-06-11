@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "TcpConnector.h"
 #include <cassert>
 
@@ -41,13 +24,13 @@ struct ConnectorContext : public OperationContext {
 };
 
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnector::TcpConnector() : dispatcher(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnector::TcpConnector(Dispatcher& dispatcher) : dispatcher(&dispatcher), context(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnector::TcpConnector(TcpConnector&& other) : dispatcher(other.dispatcher) {
   if (other.dispatcher != nullptr) {
     assert(other.context == nullptr);
@@ -55,11 +38,11 @@ TcpConnector::TcpConnector(TcpConnector&& other) : dispatcher(other.dispatcher) 
     other.dispatcher = nullptr;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnector::~TcpConnector() {
   assert(dispatcher == nullptr || context == nullptr);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnector& TcpConnector::operator=(TcpConnector&& other) {
   dispatcher = other.dispatcher;
   if (other.dispatcher != nullptr) {
@@ -70,7 +53,7 @@ TcpConnector& TcpConnector::operator=(TcpConnector&& other) {
 
   return *this;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 TcpConnection TcpConnector::connect(const Ipv4Address& address, uint16_t port) {
   assert(dispatcher != nullptr);
   assert(context == nullptr);
@@ -170,5 +153,5 @@ TcpConnection TcpConnector::connect(const Ipv4Address& address, uint16_t port) {
 
   throw std::runtime_error("TcpConnector::connect, " + message);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

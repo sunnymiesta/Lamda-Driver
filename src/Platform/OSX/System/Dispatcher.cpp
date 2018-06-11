@@ -1,20 +1,3 @@
-// Copyright (c) 2012-2016, The CryptoNote developers, The Bytecoin developers
-//
-// This file is part of Bytecoin.
-//
-// Bytecoin is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Bytecoin is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
-
 #include "Dispatcher.h"
 #include <cassert>
 #include <string>
@@ -37,7 +20,7 @@ struct ContextMakingData {
   void* uctx;
   Dispatcher* dispatcher;
 };
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 class MutextGuard {
 public:
   MutextGuard(pthread_mutex_t& _mutex) : mutex(_mutex) {
@@ -54,13 +37,13 @@ public:
 private:
   pthread_mutex_t& mutex;
 };
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 //const size_t STACK_SIZE = 64 * 1024;
 const size_t STACK_SIZE = 512 * 1024;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 static_assert(Dispatcher::SIZEOF_PTHREAD_MUTEX_T == sizeof(pthread_mutex_t), "invalid pthread mutex size");
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Dispatcher::Dispatcher() : lastCreatedTimer(0) {
   std::string message;
   kqueue = ::kqueue();
@@ -104,7 +87,7 @@ Dispatcher::Dispatcher() : lastCreatedTimer(0) {
 
   throw std::runtime_error("Dispatcher::Dispatcher, " + message);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Dispatcher::~Dispatcher() {
   for (NativeContext* context = contextGroup.firstContext; context != nullptr; context = context->groupNext) {
     interrupt(context);
@@ -128,7 +111,7 @@ Dispatcher::~Dispatcher() {
   result = pthread_mutex_destroy(reinterpret_cast<pthread_mutex_t*>(this->mutex));
   assert(result != -1);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::clear() {
   while (firstReusableContext != nullptr) {
     auto ucontext = static_cast<uctx*>(firstReusableContext->uctx);
@@ -138,7 +121,7 @@ void Dispatcher::clear() {
     delete ucontext;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::dispatch() {
   NativeContext* context;
   for (;;) {
@@ -205,15 +188,15 @@ void Dispatcher::dispatch() {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 NativeContext* Dispatcher::getCurrentContext() const {
   return currentContext;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::interrupt() {
   interrupt(currentContext);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::interrupt(NativeContext* context) {
   assert(context!=nullptr);
   if (!context->interrupted) {
@@ -225,7 +208,7 @@ void Dispatcher::interrupt(NativeContext* context) {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool Dispatcher::interrupted() {
   if (currentContext->interrupted) {
     currentContext->interrupted = false;
@@ -234,7 +217,7 @@ bool Dispatcher::interrupted() {
 
   return false;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::pushContext(NativeContext* context) {
   assert(context!=nullptr);
   context->next = nullptr;
@@ -247,7 +230,7 @@ void Dispatcher::pushContext(NativeContext* context) {
 
   lastResumingContext = context;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::remoteSpawn(std::function<void()>&& procedure) {
   MutextGuard guard(*reinterpret_cast<pthread_mutex_t*>(this->mutex));
   remoteSpawningProcedures.push(std::move(procedure));
@@ -260,7 +243,7 @@ void Dispatcher::remoteSpawn(std::function<void()>&& procedure) {
     };
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::spawn(std::function<void()>&& procedure) {
   NativeContext* context = &getReusableContext();
   if(contextGroup.firstContext != nullptr) {
@@ -280,7 +263,7 @@ void Dispatcher::spawn(std::function<void()>&& procedure) {
   contextGroup.lastContext = context;
   pushContext(context);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::yield() {
   struct timespec zeroTimeout = { 0, 0 };
   int updatesCounter = 0;
@@ -330,11 +313,11 @@ void Dispatcher::yield() {
     dispatch();
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 int Dispatcher::getKqueue() const {
   return kqueue;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 NativeContext& Dispatcher::getReusableContext() {
   if(firstReusableContext == nullptr) {
    uctx* newlyCreatedContext = new uctx;
@@ -359,13 +342,13 @@ NativeContext& Dispatcher::getReusableContext() {
   firstReusableContext = firstReusableContext->next;
   return *context;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::pushReusableContext(NativeContext& context) {
   context.next = firstReusableContext;
   firstReusableContext = &context;
   --runningContextCount;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 int Dispatcher::getTimer() {
   int timer;
   if (timers.empty()) {
@@ -377,11 +360,11 @@ int Dispatcher::getTimer() {
 
   return timer;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::pushTimer(int timer) {
   timers.push(timer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::contextProcedure(void* ucontext) {
   assert(firstReusableContext == nullptr);
   NativeContext context;
@@ -440,10 +423,10 @@ void Dispatcher::contextProcedure(void* ucontext) {
     dispatch();
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Dispatcher::contextProcedureStatic(intptr_t context) {
   ContextMakingData* makingContextData = reinterpret_cast<ContextMakingData*>(context);
   makingContextData->dispatcher->contextProcedure(makingContextData->uctx);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
