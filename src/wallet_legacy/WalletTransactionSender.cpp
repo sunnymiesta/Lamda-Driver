@@ -47,14 +47,14 @@ void createChangeDestinations(const AccountPublicAddress& address, uint64_t need
 }
 
 void constructTx(const AccountKeys keys, const std::vector<TransactionSourceEntry>& sources, const std::vector<TransactionDestinationEntry>& splittedDests,
-    const std::string& extra, uint64_t unlockTimestamp, uint64_t sizeLimit, Transaction& tx, const std::vector<tx_message_entry>& messages, uint64_t ttl) {
+    const std::string& extra, uint64_t unlockTimestamp, uint64_t sizeLimit, Transaction& tx) {
 
   std::vector<uint8_t> extraVec;
   extraVec.reserve(extra.size());
   std::for_each(extra.begin(), extra.end(), [&extraVec] (const char el) { extraVec.push_back(el);});
 
   Logging::LoggerGroup nullLog;
-  bool r = constructTransaction(keys, sources, splittedDests, messages, ttl, extraVec, tx, unlockTimestamp, nullLog);
+  bool r = constructTransaction(keys, sources, splittedDests, extraVec, tx, unlockTimestamp, nullLog);
 
   throwIf(!r, error::INTERNAL_WALLET_ERROR);
   throwIf(getObjectBinarySize(tx) >= sizeLimit, error::TRANSACTION_SIZE_TOO_BIG);
@@ -346,7 +346,7 @@ std::unique_ptr<WalletRequest> WalletTransactionSender::doSendTransaction(std::s
     splitDestinations(transaction.firstTransferId, transaction.transferCount, changeDts, context->dustPolicy, splittedDests);
 
     Transaction tx;
-    constructTx(m_keys, sources, splittedDests, transaction.extra, transaction.unlockTime, m_upperTransactionSizeLimit, tx, context->messages, context->ttl);
+    constructTx(m_keys, sources, splittedDests, transaction.extra, transaction.unlockTime, m_upperTransactionSizeLimit, tx);
 
     getObjectHash(tx, transaction.hash);
 
@@ -784,7 +784,6 @@ uint64_t WalletTransactionSender::selectDepositTransfers(const std::vector<Depos
     }
 
     Deposit deposit;
-    bool r = m_transactionsCache.getDeposit(id, deposit);
     assert(r);
 
     foundMoney += deposit.amount + deposit.interest;

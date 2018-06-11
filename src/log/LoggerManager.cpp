@@ -9,12 +9,12 @@ using Common::JsonValue;
 
 LoggerManager::LoggerManager() {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void LoggerManager::operator()(const std::string& category, Level level, boost::posix_time::ptime time, const std::string& body) {
   std::unique_lock<std::mutex> lock(reconfigureLock);
   LoggerGroup::operator()(category, level, time, body);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void LoggerManager::configure(const JsonValue& val) {
   std::unique_lock<std::mutex> lock(reconfigureLock);
   loggers.clear();
@@ -106,5 +106,5 @@ void LoggerManager::configure(const JsonValue& val) {
     disableCategory(category);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

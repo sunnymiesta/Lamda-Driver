@@ -1130,9 +1130,6 @@ bool TransfersContainer::isIncluded(const TransactionOutputInformationEx& output
  *  \pre m_mutex is locked
  */
 void TransfersContainer::addUnlockJob(const TransactionOutputInformationEx& output) {
-  TransferUnlockJob job = makeTransferUnlockJob(output, static_cast<uint32_t>(m_transactionSpendableAge));
-
-  auto r = m_transfersUnlockJobs.emplace(std::move(job));
   assert(r.second);
 }
 

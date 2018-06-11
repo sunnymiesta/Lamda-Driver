@@ -33,7 +33,7 @@ bool parseAndValidateTransactionFromBinaryArray(const BinaryArray& tx_blob, Tran
   getObjectHash(*static_cast<TransactionPrefix*>(&tx), tx_prefix_hash);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool generate_key_image_helper(const AccountKeys& ack, const PublicKey& tx_public_key, size_t real_output_index, KeyPair& in_ephemeral, KeyImage& ki) {
   KeyDerivation recv_derivation;
   bool r = generate_key_derivation(tx_public_key, ack.viewSecretKey, recv_derivation);
@@ -56,7 +56,7 @@ bool generate_key_image_helper(const AccountKeys& ack, const PublicKey& tx_publi
   generate_key_image(in_ephemeral.publicKey, in_ephemeral.secretKey, ki);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint64_t power_integral(uint64_t a, uint64_t b) {
   if (b == 0)
     return 1;
@@ -65,13 +65,42 @@ uint64_t power_integral(uint64_t a, uint64_t b) {
     total *= a;
   return total;
 }
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+bool get_tx_fee(const Transaction& tx, uint64_t & fee) {
+  uint64_t amount_in = 0;
+  uint64_t amount_out = 0;
 
+  for (const auto& in : tx.inputs) {
+    if (in.type() == typeid(KeyInput)) {
+      amount_in += boost::get<KeyInput>(in).amount;
+    } else if (in.type() == typeid(MultisignatureInput)) {
+      amount_in += boost::get<MultisignatureInput>(in).amount;
+    }
+  }
+
+  for (const auto& o : tx.outputs) {
+    amount_out += o.amount;
+  }
+
+  if (!(amount_in >= amount_out)) {
+    return false;
+  }
+
+  fee = amount_in - amount_out;
+  return true;
+}
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+uint64_t get_tx_fee(const Transaction& tx) {
+  uint64_t r = 0;
+  if (!get_tx_fee(tx, r))
+    return 0;
+  return r;
+}
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool constructTransaction(
   const AccountKeys& sender_account_keys,
   const std::vector<TransactionSourceEntry>& sources,
   const std::vector<TransactionDestinationEntry>& destinations,
-  const std::vector<tx_message_entry>& messages,
-  uint64_t ttl,
   std::vector<uint8_t> extra,
   Transaction& tx,
   uint64_t unlock_time,
@@ -182,22 +211,6 @@ bool constructTransaction(
     return false;
   }
 
-  for (size_t i = 0; i < messages.size(); i++) {
-    const tx_message_entry &msg = messages[i];
-    tx_extra_message tag;
-    if (!tag.encrypt(i, msg.message, msg.encrypt ? &msg.addr : NULL, txkey)) {
-      return false;
-    }
-
-    if (!append_message_to_extra(tx.extra, tag)) {
-      return false;
-    }
-  }
-
-  if (ttl != 0) {
-    appendTTLToExtra(tx.extra, ttl);
-  }
-
   //generate ring signatures
   Hash tx_prefix_hash;
   getObjectHash(*static_cast<TransactionPrefix*>(&tx), tx_prefix_hash);
@@ -219,7 +232,7 @@ bool constructTransaction(
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool get_inputs_money_amount(const Transaction& tx, uint64_t& money) {
   money = 0;
 
@@ -236,7 +249,7 @@ bool get_inputs_money_amount(const Transaction& tx, uint64_t& money) {
   }
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint32_t get_block_height(const Block& b) {
   if (b.baseTransaction.inputs.size() != 1) {
     return 0;
@@ -247,7 +260,7 @@ uint32_t get_block_height(const Block& b) {
   }
   return boost::get<BaseInput>(in).blockIndex;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool check_inputs_types_supported(const TransactionPrefix& tx) {
   for (const auto& in : tx.inputs) {
     const auto& inputType = in.type();
@@ -262,7 +275,7 @@ bool check_inputs_types_supported(const TransactionPrefix& tx) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool check_outs_valid(const TransactionPrefix& tx, std::string* error) {
   for (const TransactionOutput& out : tx.outputs) {
     if (out.target.type() == typeid(KeyOutput)) {
@@ -310,7 +323,7 @@ bool check_outs_valid(const TransactionPrefix& tx, std::string* error) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool checkMultisignatureInputsDiff(const TransactionPrefix& tx) {
   std::set<std::pair<uint64_t, uint32_t>> inputsUsage;
   for (const auto& inv : tx.inputs) {
@@ -323,11 +336,11 @@ bool checkMultisignatureInputsDiff(const TransactionPrefix& tx) {
   }
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool check_money_overflow(const TransactionPrefix &tx) {
   return check_inputs_overflow(tx) && check_outs_overflow(tx);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool check_inputs_overflow(const TransactionPrefix &tx) {
   uint64_t money = 0;
 
@@ -363,7 +376,7 @@ bool check_inputs_overflow(const TransactionPrefix &tx) {
   }
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool check_outs_overflow(const TransactionPrefix& tx) {
   uint64_t money = 0;
   for (const auto& o : tx.outputs) {
@@ -373,7 +386,7 @@ bool check_outs_overflow(const TransactionPrefix& tx) {
   }
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint64_t get_outs_money_amount(const Transaction& tx) {
   uint64_t outputs_amount = 0;
   for (const auto& o : tx.outputs) {
@@ -381,7 +394,7 @@ uint64_t get_outs_money_amount(const Transaction& tx) {
   }
   return outputs_amount;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::string short_hash_str(const Hash& h) {
   std::string res = Common::podToHex(h);
 
@@ -392,26 +405,26 @@ std::string short_hash_str(const Hash& h) {
 
   return res;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool is_out_to_acc(const AccountKeys& acc, const KeyOutput& out_key, const KeyDerivation& derivation, size_t keyIndex) {
   PublicKey pk;
   derive_public_key(derivation, keyIndex, acc.address.spendPublicKey, pk);
   return pk == out_key.key;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool is_out_to_acc(const AccountKeys& acc, const KeyOutput& out_key, const PublicKey& tx_pub_key, size_t keyIndex) {
   KeyDerivation derivation;
   generate_key_derivation(tx_pub_key, acc.viewSecretKey, derivation);
   return is_out_to_acc(acc, out_key, derivation, keyIndex);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool lookup_acc_outs(const AccountKeys& acc, const Transaction& tx, std::vector<size_t>& outs, uint64_t& money_transfered) {
   PublicKey transactionPublicKey = getTransactionPublicKeyFromExtra(tx.extra);
   if (transactionPublicKey == NULL_PUBLIC_KEY)
     return false;
   return lookup_acc_outs(acc, tx, transactionPublicKey, outs, money_transfered);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool lookup_acc_outs(const AccountKeys& acc, const Transaction& tx, const PublicKey& tx_pub_key, std::vector<size_t>& outs, uint64_t& money_transfered) {
   money_transfered = 0;
   size_t keyIndex = 0;
@@ -437,7 +450,7 @@ bool lookup_acc_outs(const AccountKeys& acc, const Transaction& tx, const Public
   }
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool get_block_hashing_blob(const Block& b, BinaryArray& ba) {
   if (!toBinaryArray(static_cast<const BlockHeader&>(b), ba)) {
     return false;
@@ -449,12 +462,12 @@ bool get_block_hashing_blob(const Block& b, BinaryArray& ba) {
   ba.insert(ba.end(), transactionCount.begin(), transactionCount.end());
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool get_parent_block_hashing_blob(const Block& b, BinaryArray& blob) {
   auto serializer = makeParentBlockSerializer(b, true, true);
   return toBinaryArray(serializer, blob);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool get_block_hash(const Block& b, Hash& res) {
   BinaryArray ba;
   if (!get_block_hashing_blob(b, ba)) {
@@ -472,13 +485,13 @@ bool get_block_hash(const Block& b, Hash& res) {
 
   return getObjectHash(ba, res);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Hash get_block_hash(const Block& b) {
   Hash p = NULL_HASH;
   get_block_hash(b, p);
   return p;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool get_aux_block_header_hash(const Block& b, Hash& res) {
   BinaryArray blob;
   if (!get_block_hashing_blob(b, blob)) {
@@ -487,7 +500,7 @@ bool get_aux_block_header_hash(const Block& b, Hash& res) {
 
   return getObjectHash(blob, res);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool get_block_longhash(cn_context &context, const Block& b, Hash& res) {
   BinaryArray bd;
   if (!get_block_hashing_blob(b, bd)) {
@@ -497,14 +510,14 @@ bool get_block_longhash(cn_context &context, const Block& b, Hash& res) {
   cn_slow_hash(context, bd.data(), bd.size(), res, b.majorVersion);
 return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::vector<uint32_t> relative_output_offsets_to_absolute(const std::vector<uint32_t>& off) {
   std::vector<uint32_t> res = off;
   for (size_t i = 1; i < res.size(); i++)
     res[i] += res[i - 1];
   return res;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::vector<uint32_t> absolute_output_offsets_to_relative(const std::vector<uint32_t>& off) {
   std::vector<uint32_t> res = off;
   if (!off.size())
@@ -515,17 +528,17 @@ std::vector<uint32_t> absolute_output_offsets_to_relative(const std::vector<uint
 
   return res;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void get_tx_tree_hash(const std::vector<Hash>& tx_hashes, Hash& h) {
   tree_hash(tx_hashes.data(), tx_hashes.size(), h);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Hash get_tx_tree_hash(const std::vector<Hash>& tx_hashes) {
   Hash h = NULL_HASH;
   get_tx_tree_hash(tx_hashes, h);
   return h;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Hash get_tx_tree_hash(const Block& b) {
   std::vector<Hash> txs_ids;
   Hash h = NULL_HASH;
@@ -536,7 +549,7 @@ Hash get_tx_tree_hash(const Block& b) {
   }
   return get_tx_tree_hash(txs_ids);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool is_valid_decomposed_amount(uint64_t amount) {
   auto it = std::lower_bound(Currency::PRETTY_AMOUNTS.begin(), Currency::PRETTY_AMOUNTS.end(), amount);
   if (it == Currency::PRETTY_AMOUNTS.end() || amount != *it) {
@@ -544,5 +557,5 @@ bool is_valid_decomposed_amount(uint64_t amount) {
   }
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

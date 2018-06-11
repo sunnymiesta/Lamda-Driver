@@ -37,7 +37,7 @@ std::string formatPattern(const std::string& pattern, const std::string& categor
 }
 
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void CommonLogger::operator()(const std::string& category, Level level, boost::posix_time::ptime time, const std::string& body) {
   if (level <= logLevel && disabledCategories.count(category) == 0) {
     std::string body2 = body;
@@ -56,27 +56,27 @@ void CommonLogger::operator()(const std::string& category, Level level, boost::p
     doLogString(body2);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void CommonLogger::setPattern(const std::string& pattern) {
   this->pattern = pattern;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void CommonLogger::enableCategory(const std::string& category) {
   disabledCategories.erase(category);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void CommonLogger::disableCategory(const std::string& category) {
   disabledCategories.insert(category);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void CommonLogger::setMaxLevel(Level level) {
   logLevel = level;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 CommonLogger::CommonLogger(Level level) : logLevel(level), pattern("%D %T %L [%C] ") {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void CommonLogger::doLogString(const std::string& message) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

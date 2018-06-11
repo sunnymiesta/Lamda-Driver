@@ -27,13 +27,13 @@ JsonRpcServer::JsonRpcServer(System::Dispatcher& sys, System::Event& stopEvent, 
   logger(loggerGroup, "JsonRpcServer")
 {
 }
-
-void JsonRpcServer::start(const std::string& bindAddress, uint16_t bindPort, const std::string& user, const std::string& password) {
-  HttpServer::start(bindAddress, bindPort, user, password);
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+void JsonRpcServer::start(const std::string& bindAddress, uint16_t bindPort, const std::string& m_rpcUser, const std::string& m_rpcPassword) {
+  HttpServer::start(bindAddress, bindPort, m_rpcUser, m_rpcPassword);
   stopEvent.wait();
   HttpServer::stop();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonRpcServer::processRequest(const CryptoNote::HttpRequest& req, CryptoNote::HttpResponse& resp) {
   try {
     logger(Logging::TRACE) << "HTTP request came: \n" << req;
@@ -71,7 +71,7 @@ void JsonRpcServer::processRequest(const CryptoNote::HttpRequest& req, CryptoNot
     resp.setStatus(CryptoNote::HttpResponse::STATUS_500);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonRpcServer::prepareJsonResponse(const Common::JsonValue& req, Common::JsonValue& resp) {
   using Common::JsonValue;
 
@@ -81,7 +81,7 @@ void JsonRpcServer::prepareJsonResponse(const Common::JsonValue& req, Common::Js
   
   resp.insert("jsonrpc", "2.0");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonRpcServer::makeErrorResponse(const std::error_code& ec, Common::JsonValue& resp) {
   using Common::JsonValue;
 
@@ -104,7 +104,7 @@ void JsonRpcServer::makeErrorResponse(const std::error_code& ec, Common::JsonVal
 
   resp.insert("error", error);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonRpcServer::makeGenericErrorReponse(Common::JsonValue& resp, const char* what, int errorCode) {
   using Common::JsonValue;
 
@@ -129,7 +129,7 @@ void JsonRpcServer::makeGenericErrorReponse(Common::JsonValue& resp, const char*
   resp.insert("error", error);
 
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonRpcServer::makeMethodNotFoundResponse(Common::JsonValue& resp) {
   using Common::JsonValue;
 
@@ -146,11 +146,11 @@ void JsonRpcServer::makeMethodNotFoundResponse(Common::JsonValue& resp) {
 
   resp.insert("error", error);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonRpcServer::fillJsonResponse(const Common::JsonValue& v, Common::JsonValue& resp) {
   resp.insert("result", v);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonRpcServer::makeJsonParsingErrorResponse(Common::JsonValue& resp) {
   using Common::JsonValue;
 
@@ -169,5 +169,5 @@ void JsonRpcServer::makeJsonParsingErrorResponse(Common::JsonValue& resp) {
 
   resp.insert("error", error);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

@@ -3,44 +3,26 @@
 namespace Logging {
 
 LoggerMessage::LoggerMessage(ILogger& logger, const std::string& category, Level level, const std::string& color)
-  : std::ostream(this)
-  , std::streambuf()
-  , logger(logger)
-  , category(category)
-  , logLevel(level)
-  , message(color)
-  , timestamp(boost::posix_time::microsec_clock::local_time())
-  , gotText(false) {
-}
-
-LoggerMessage::~LoggerMessage() {
-  if (gotText) {
-    (*this) << std::endl;
-  }
-}
-
-#ifndef __linux__
-LoggerMessage::LoggerMessage(LoggerMessage&& other)
-  : std::ostream(std::move(other))
-  , std::streambuf(std::move(other))
-  , category(other.category)
-  , logLevel(other.logLevel)
-  , logger(other.logger)
-  , message(other.message)
-  , timestamp(boost::posix_time::microsec_clock::local_time())
-  , gotText(false) {
-  this->set_rdbuf(this);
-}
-#else
+	: std::ostream(this)
+	, std::streambuf()
+	, m_logger(logger)
+	, m_sCategory(category)
+	, m_nLogLevel(level)
+	, m_sMessage(color)
+	, m_tmTimeStamp(boost::posix_time::microsec_clock::local_time())
+	, m_bGotText(false)
+{}
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+#if defined __linux__ && !defined __ANDROID__
 LoggerMessage::LoggerMessage(LoggerMessage&& other)
   : std::ostream(nullptr)
   , std::streambuf()
-  , category(other.category)
-  , logLevel(other.logLevel)
-  , logger(other.logger)
-  , message(other.message)
-  , timestamp(boost::posix_time::microsec_clock::local_time())
-  , gotText(false) {
+  , m_sCategory(other.m_sCategory)
+  , m_nLogLevel(other.m_nLogLevel)
+  , m_logger(other.m_logger)
+  , m_sMessage(other.m_sMessage)
+  , m_tmTimeStamp(boost::posix_time::microsec_clock::local_time())
+  , m_bGotText(false) {
   if (this != &other) {
     _M_tie = nullptr;
     _M_streambuf = nullptr;
@@ -78,25 +60,48 @@ LoggerMessage::LoggerMessage(LoggerMessage&& other)
   }
   _M_streambuf = this;
 }
+#else
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+LoggerMessage::LoggerMessage(LoggerMessage&& other)
+	: std::ostream(std::move(other))
+	, std::streambuf(std::move(other))
+	, m_logger(other.m_logger)
+	, m_sCategory(other.m_sCategory)
+	, m_nLogLevel(other.m_nLogLevel)
+	, m_sMessage(other.m_sMessage)
+	, m_tmTimeStamp(boost::posix_time::microsec_clock::local_time())
+	, m_bGotText(false)
+{
+	std::ostream::rdbuf(this);
+}
 #endif
-
-int LoggerMessage::sync() {
-  logger(category, logLevel, timestamp, message);
-  gotText = false;
-  message = DEFAULT;
-  return 0;
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+LoggerMessage::~LoggerMessage()
+{
+	if (m_bGotText)
+		(*this) << std::endl;
 }
-
-std::streamsize LoggerMessage::xsputn(const char* s, std::streamsize n) {
-  gotText = true;
-  message.append(s, n);
-  return n;
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+int LoggerMessage::sync()
+{
+	m_logger(m_sCategory, m_nLogLevel, m_tmTimeStamp, m_sMessage);
+	m_bGotText = false;
+	m_sMessage = Logging::DEFAULT;
+	return 0;
 }
-
-int LoggerMessage::overflow(int c) {
-  gotText = true;
-  message += static_cast<char>(c);
-  return 0;
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+std::streamsize LoggerMessage::xsputn(const char* s, std::streamsize n)
+{
+	m_bGotText = true;
+	m_sMessage.append(s, n);
+	return n;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+int LoggerMessage::overflow(int c)
+{
+	m_bGotText = true;
+	m_sMessage += static_cast<char>(c);
+	return 0;
 }
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
+} //Logging

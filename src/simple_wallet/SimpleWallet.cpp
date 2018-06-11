@@ -1296,18 +1296,6 @@ bool simple_wallet::transfer(const std::vector<std::string> &args) {
       }
     }
 
-    std::vector<TransactionMessage> messages;
-    for (auto dst : cmd.dsts) {
-      for (auto msg : cmd.messages) {
-        messages.emplace_back(TransactionMessage{ msg, dst.address });
-      }
-    }
-
-    uint64_t ttl = 0;
-    if (cmd.ttl != 0) {
-      ttl = static_cast<uint64_t>(time(nullptr)) + cmd.ttl;
-    }
-
     CryptoNote::WalletHelper::SendCompleteResultObserver sent;
 
     std::string extraString;
@@ -1321,13 +1309,7 @@ bool simple_wallet::transfer(const std::vector<std::string> &args) {
       return true;
     }
 
-    std::error_code sendError = sent.wait(tx);
     removeGuard.removeObserver();
-
-    if (sendError) {
-      fail_msg_writer() << sendError.message();
-      return true;
-    }
 
     CryptoNote::WalletLegacyTransaction txInfo;
     m_wallet->getTransaction(tx, txInfo);

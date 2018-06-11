@@ -3,13 +3,14 @@
 #include <unordered_map>
 #include <common/ConsoleTools.h>
 
+
 namespace Logging {
 
 using Common::Console::Color;
 
 ConsoleLogger::ConsoleLogger(Level level) : CommonLogger(level) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void ConsoleLogger::doLogString(const std::string& message) {
   std::lock_guard<std::mutex> lock(mutex);
   bool readingText = true;
@@ -57,5 +58,5 @@ void ConsoleLogger::doLogString(const std::string& message) {
     Common::Console::setTextColor(Color::Default);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

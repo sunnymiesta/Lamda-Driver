@@ -5,15 +5,16 @@
 
 namespace Logging {
 
-class LoggerRef {
+class LoggerRef
+{
 public:
-  LoggerRef(ILogger& logger, const std::string& category);
-  LoggerMessage operator()(Level level = INFO, const std::string& color = DEFAULT) const;
-  ILogger& getLogger() const;
+	LoggerRef(ILogger& logger, const std::string& category);
+	LoggerMessage operator()(Level level = INFO, const std::string& color = DEFAULT) const;
+	ILogger& getLogger() const;
 
 private:
-  ILogger* logger;
-  std::string category;
+	ILogger* m_logger;
+	std::string m_sCategory;
 };
 
-}
+} //Logging

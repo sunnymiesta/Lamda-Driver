@@ -15,7 +15,7 @@ namespace CryptoNote {
   /************************************************************************/
   /* CryptoNote helper functions                                          */
   /************************************************************************/
-  //-----------------------------------------------------------------------------------------------
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   uint64_t getPenalizedAmount(uint64_t amount, size_t medianSize, size_t currentBlockSize) {
     static_assert(sizeof(size_t) >= sizeof(uint32_t), "size_t is too small");
     assert(currentBlockSize <= 2 * medianSize);
@@ -29,10 +29,12 @@ namespace CryptoNote {
     if (currentBlockSize <= medianSize) {
       return amount;
     }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
     uint64_t productHi;
-    uint64_t productLo = mul128(amount, currentBlockSize * (UINT64_C(2) * medianSize - currentBlockSize), &productHi);
-
+    uint64_t multiplicand = UINT64_C(2) * medianSize - currentBlockSize;
+    multiplicand *= currentBlockSize;
+    uint64_t productLo = mul128(amount, multiplicand, &productHi);
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
     uint64_t penalizedAmountHi;
     uint64_t penalizedAmountLo;
     div128_32(productHi, productLo, static_cast<uint32_t>(medianSize), &penalizedAmountHi, &penalizedAmountLo);
@@ -43,14 +45,13 @@ namespace CryptoNote {
 
     return penalizedAmountLo;
   }
-  //-----------------------------------------------------------------------
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   std::string getAccountAddressAsStr(uint64_t prefix, const AccountPublicAddress& adr) {
     BinaryArray ba;
-    bool r = toBinaryArray(adr, ba);
     assert(r);
     return Tools::Base58::encode_addr(prefix, Common::asString(ba));
   }
-  //-----------------------------------------------------------------------
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   bool is_coinbase(const Transaction& tx) {
     if(tx.inputs.size() != 1) {
       return false;
@@ -62,7 +63,7 @@ namespace CryptoNote {
 
     return true;
   }
-  //-----------------------------------------------------------------------
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   bool parseAccountAddressString(uint64_t& prefix, AccountPublicAddress& adr, const std::string& str) {
     std::string data;
 
@@ -73,17 +74,17 @@ namespace CryptoNote {
       check_key(adr.spendPublicKey) &&
       check_key(adr.viewPublicKey);
   }
-  //-----------------------------------------------------------------------
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   bool operator ==(const CryptoNote::Transaction& a, const CryptoNote::Transaction& b) {
     return getObjectHash(a) == getObjectHash(b);
   }
-  //-----------------------------------------------------------------------
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
   bool operator ==(const CryptoNote::Block& a, const CryptoNote::Block& b) {
     return CryptoNote::get_block_hash(a) == CryptoNote::get_block_hash(b);
   }
 }
-
-//--------------------------------------------------------------------------------
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------/
 bool parse_hash256(const std::string& str_hash, Crypto::Hash& hash) {
   return Common::podFromHex(str_hash, hash);
 }
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//

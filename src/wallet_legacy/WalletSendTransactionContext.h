@@ -27,8 +27,6 @@ struct SendTransactionContext
   std::vector<TransactionOutputInformation> selectedTransfers;
   TxDustPolicy dustPolicy;
   uint64_t mixIn;
-  std::vector<tx_message_entry> messages;
-  uint64_t ttl;
   uint32_t depositTerm;
 };
 

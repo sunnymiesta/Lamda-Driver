@@ -6,20 +6,15 @@ namespace Logging {
 
 StreamLogger::StreamLogger(Level level) : CommonLogger(level), stream(nullptr) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 StreamLogger::StreamLogger(std::ostream& stream, Level level) : CommonLogger(level), stream(&stream) {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void StreamLogger::attachToStream(std::ostream& stream) {
   this->stream = &stream;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void StreamLogger::doLogString(const std::string& message) {
-  #ifdef DEBUG
-    //print log to console too
-    std::cout << message;
-  #endif
-	
   if (stream != nullptr && stream->good()) {
     std::lock_guard<std::mutex> lock(mutex);
     bool readingText = true;
@@ -34,5 +29,5 @@ void StreamLogger::doLogString(const std::string& message) {
     *stream << std::flush;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

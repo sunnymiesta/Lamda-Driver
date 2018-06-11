@@ -2227,16 +2227,10 @@ void WalletGreen::onTransactionUpdated(const Crypto::PublicKey&, const Crypto::H
   std::vector<ContainerAmounts> containerAmountsList;
   containerAmountsList.reserve(containers.size());
   for (auto container : containers) {
-    uint64_t inputsAmount;
-    // Don't move this code to the following remote spawn, because it guarantees that the container has the transaction
-    uint64_t outputsAmount;
-    bool found = container->getTransactionInformation(transactionHash, info, &inputsAmount, &outputsAmount);
     assert(found);
 
     ContainerAmounts containerAmounts;
     containerAmounts.container = container;
-    containerAmounts.amounts.input = -static_cast<int64_t>(inputsAmount);
-    containerAmounts.amounts.output = static_cast<int64_t>(outputsAmount);
     containerAmountsList.emplace_back(std::move(containerAmounts));
   }
 
@@ -2663,7 +2657,6 @@ void WalletGreen::subscribeWallets() {
       sub.syncStart.timestamp = std::max(static_cast<uint64_t>(wallet.creationTimestamp), ACCOUNT_CREATE_TIME_ACCURACY) - ACCOUNT_CREATE_TIME_ACCURACY;
 
       auto& subscription = m_synchronizer.addSubscription(sub);
-      bool r = index.modify(it, [&subscription](WalletRecord& rec) { rec.container = &subscription.getContainer(); });
       assert(r);
 
       subscription.addObserver(this);

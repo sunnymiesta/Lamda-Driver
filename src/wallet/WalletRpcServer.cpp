@@ -162,8 +162,6 @@ bool wallet_rpc_server::on_transfer(const wallet_rpc::COMMAND_RPC_TRANSFER::requ
      messages.emplace_back(CryptoNote::TransactionMessage{ rpc_message.message, rpc_message.address });
   }
 
-  uint64_t ttl = 0;
-
   std::string extraString;
   std::copy(extra.begin(), extra.end(), std::back_inserter(extraString));
   try {

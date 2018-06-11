@@ -8,5 +8,5 @@ KeyPair generateKeyPair() {
   Crypto::generate_keys(k.publicKey, k.secretKey);
   return k;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
