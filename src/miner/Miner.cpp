@@ -15,11 +15,11 @@ Miner::Miner(System::Dispatcher& dispatcher, Logging::ILogger& logger) :
   m_state(MiningState::MINING_STOPPED),
   m_logger(logger, "Miner") {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Miner::~Miner() {
   assert(m_state != MiningState::MINING_IN_PROGRESS);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 Block Miner::mine(const BlockMiningParameters& blockMiningParameters, size_t threadCount) {
   if (threadCount == 0) {
     throw std::runtime_error("Miner requires at least one thread");
@@ -43,7 +43,7 @@ Block Miner::mine(const BlockMiningParameters& blockMiningParameters, size_t thr
   assert(m_state == MiningState::BLOCK_FOUND);
   return m_block;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Miner::stop() {
   MiningState state = MiningState::MINING_IN_PROGRESS;
 
@@ -52,7 +52,7 @@ void Miner::stop() {
     m_miningStopped.clear();
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threadCount) {
   assert(threadCount > 0);
 
@@ -78,7 +78,7 @@ void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threa
 
   m_miningStopped.set();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void Miner::workerFunc(const Block& blockTemplate, difficulty_type difficulty, uint32_t nonceStep) {
   try {
     Block block = blockTemplate;
@@ -112,7 +112,7 @@ void Miner::workerFunc(const Block& blockTemplate, difficulty_type difficulty, u
     m_state = MiningState::MINING_STOPPED;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool Miner::setStateBlockFound() {
   auto state = m_state.load();
 
@@ -136,5 +136,5 @@ bool Miner::setStateBlockFound() {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //namespace CryptoNote

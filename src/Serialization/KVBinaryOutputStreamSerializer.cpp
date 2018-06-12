@@ -14,7 +14,7 @@ template <typename T>
 void writePod(IOutputStream& s, const T& value) {
   write(s, &value, sizeof(T));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 template<class T>
 size_t packVarint(IOutputStream& s, uint8_t type_or, size_t pv) {
   T v = static_cast<T>(pv << 2);
@@ -22,7 +22,7 @@ size_t packVarint(IOutputStream& s, uint8_t type_or, size_t pv) {
   write(s, &v, sizeof(T));
   return sizeof(T);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void writeElementName(IOutputStream& s, Common::StringView name) {
   if (name.getSize() > std::numeric_limits<uint8_t>::max()) {
     throw std::runtime_error("Element name is too long");
@@ -32,7 +32,7 @@ void writeElementName(IOutputStream& s, Common::StringView name) {
   write(s, &len, sizeof(len));
   write(s, name.getData(), len);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t writeArraySize(IOutputStream& s, size_t val) {
   if (val <= 63) {
     return packVarint<uint8_t>(s, PORTABLE_RAW_SIZE_MARK_BYTE, val);
@@ -47,7 +47,7 @@ size_t writeArraySize(IOutputStream& s, size_t val) {
     return packVarint<uint64_t>(s, PORTABLE_RAW_SIZE_MARK_INT64, val);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
 
 namespace CryptoNote {
@@ -55,7 +55,7 @@ namespace CryptoNote {
 KVBinaryOutputStreamSerializer::KVBinaryOutputStreamSerializer() {
   beginObject(std::string());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void KVBinaryOutputStreamSerializer::dump(IOutputStream& target) {
   assert(m_objectsStack.size() == 1);
   assert(m_stack.size() == 1);
@@ -69,11 +69,11 @@ void KVBinaryOutputStreamSerializer::dump(IOutputStream& target) {
   writeArraySize(target, m_stack.front().count);
   write(target, stream().data(), stream().size());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 ISerializer::SerializerType KVBinaryOutputStreamSerializer::type() const {
   return ISerializer::OUTPUT;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::beginObject(Common::StringView name) {
   checkArrayPreamble(BIN_KV_SERIALIZE_TYPE_OBJECT);
  
@@ -82,7 +82,7 @@ bool KVBinaryOutputStreamSerializer::beginObject(Common::StringView name) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void KVBinaryOutputStreamSerializer::endObject() {
   assert(m_objectsStack.size());
 
@@ -99,7 +99,7 @@ void KVBinaryOutputStreamSerializer::endObject() {
   writeArraySize(out, level.count);
   write(out, objStream.data(), objStream.size());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::beginArray(size_t& size, Common::StringView name) {
   m_stack.push_back(Level(name, size));
   return true;
@@ -113,61 +113,61 @@ void KVBinaryOutputStreamSerializer::endArray() {
     ++m_stack.back().count;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(uint8_t& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_UINT8, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(uint16_t& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_UINT16, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(int16_t& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_INT16, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(uint32_t& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_UINT32, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(int32_t& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_INT32, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(int64_t& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_INT64, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(uint64_t& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_UINT64, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(bool& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_BOOL, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(double& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_DOUBLE, name);
   writePod(stream(), value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::operator()(std::string& value, Common::StringView name) {
   writeElementPrefix(BIN_KV_SERIALIZE_TYPE_STRING, name);
 
@@ -176,7 +176,7 @@ bool KVBinaryOutputStreamSerializer::operator()(std::string& value, Common::Stri
   write(out, value.data(), value.size());
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::binary(void* value, size_t size, Common::StringView name) {
   if (size > 0) {
     writeElementPrefix(BIN_KV_SERIALIZE_TYPE_STRING, name);
@@ -186,11 +186,11 @@ bool KVBinaryOutputStreamSerializer::binary(void* value, size_t size, Common::St
   }
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool KVBinaryOutputStreamSerializer::binary(std::string& value, Common::StringView name) {
   return binary(const_cast<char*>(value.data()), value.size(), name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void KVBinaryOutputStreamSerializer::writeElementPrefix(uint8_t type, Common::StringView name) {  
   assert(m_stack.size());
 
@@ -206,7 +206,7 @@ void KVBinaryOutputStreamSerializer::writeElementPrefix(uint8_t type, Common::St
     ++level.count;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void KVBinaryOutputStreamSerializer::checkArrayPreamble(uint8_t type) {
   if (m_stack.empty()) {
     return;
@@ -223,11 +223,10 @@ void KVBinaryOutputStreamSerializer::checkArrayPreamble(uint8_t type) {
     level.state = State::Array;
   }
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 MemoryStream& KVBinaryOutputStreamSerializer::stream() {
   assert(m_objectsStack.size());
   return m_objectsStack.back();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

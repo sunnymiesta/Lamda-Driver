@@ -24,13 +24,13 @@ MinerEvent BlockMinedEvent() {
   event.type = MinerEventType::BLOCK_MINED;
   return event;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 MinerEvent BlockchainUpdatedEvent() {
   MinerEvent event;
   event.type = MinerEventType::BLOCKCHAIN_UPDATED;
   return event;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void adjustMergeMiningTag(Block& blockTemplate) {
   if (blockTemplate.majorVersion >= NEXT_BLOCK_MAJOR) {
     CryptoNote::TransactionExtraMergeMiningTag mmTag;
@@ -45,7 +45,7 @@ void adjustMergeMiningTag(Block& blockTemplate) {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
 
 MinerManager::MinerManager(System::Dispatcher& dispatcher, const CryptoNote::MiningConfig& config, Logging::ILogger& logger) :
@@ -61,10 +61,10 @@ MinerManager::MinerManager(System::Dispatcher& dispatcher, const CryptoNote::Min
 
   m_httpEvent.set();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 MinerManager::~MinerManager() {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::start() {
   m_logger(Logging::DEBUGGING) << "starting";
 
@@ -90,7 +90,7 @@ void MinerManager::start() {
 
   eventLoop();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::eventLoop() {
   size_t blocksMined = 0;
 
@@ -138,7 +138,7 @@ void MinerManager::eventLoop() {
     }
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 MinerEvent MinerManager::waitEvent() {
   while(m_events.empty()) {
     m_eventOccurred.wait();
@@ -150,12 +150,12 @@ MinerEvent MinerManager::waitEvent() {
 
   return event;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::pushEvent(MinerEvent&& event) {
   m_events.push(std::move(event));
   m_eventOccurred.set();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::startMining(const CryptoNote::BlockMiningParameters& params) {
   m_contextGroup.spawn([this, params] () {
     try {
@@ -167,11 +167,11 @@ void MinerManager::startMining(const CryptoNote::BlockMiningParameters& params) 
     }
   });
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::stopMining() {
   m_miner.stop();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::startBlockchainMonitoring() {
   m_contextGroup.spawn([this] () {
     try {
@@ -183,11 +183,11 @@ void MinerManager::startBlockchainMonitoring() {
     }
   });
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::stopBlockchainMonitoring() {
   m_blockchainMonitor.stop();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool MinerManager::submitBlock(const Block& minedBlock, const std::string& daemonHost, uint16_t daemonPort) {
   try {
     HttpClient client(m_dispatcher, daemonHost, daemonPort);
@@ -207,7 +207,7 @@ bool MinerManager::submitBlock(const Block& minedBlock, const std::string& daemo
     return false;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 BlockMiningParameters MinerManager::requestMiningParameters(System::Dispatcher& dispatcher, const std::string& daemonHost, uint16_t daemonPort, const std::string& miningAddress) {
   try {
     HttpClient client(dispatcher, daemonHost, daemonPort);
@@ -239,8 +239,7 @@ BlockMiningParameters MinerManager::requestMiningParameters(System::Dispatcher& 
     throw;
   }
 }
-
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MinerManager::adjustBlockTemplate(CryptoNote::Block& blockTemplate) const {
   adjustMergeMiningTag(blockTemplate);
   if (m_config.firstBlockTimestamp == 0) {
@@ -254,5 +253,5 @@ void MinerManager::adjustBlockTemplate(CryptoNote::Block& blockTemplate) const {
     blockTemplate.timestamp = m_lastBlockTimestamp + m_config.blockTimestampInterval;
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //namespace Miner

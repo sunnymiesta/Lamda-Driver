@@ -41,7 +41,7 @@ std::error_code interpretResponseStatus(const std::string& status) {
   }
   return std::error_code();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
 
 NodeRpcProxy::NodeRpcProxy(const std::string& nodeHost, unsigned short nodePort) :
@@ -52,14 +52,14 @@ NodeRpcProxy::NodeRpcProxy(const std::string& nodeHost, unsigned short nodePort)
     m_connected(true) {
   resetInternalState();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 NodeRpcProxy::~NodeRpcProxy() {
   try {
     shutdown();
   } catch (std::exception&) {
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::resetInternalState() {
   m_stop = false;
   m_peerCount.store(0, std::memory_order_relaxed);
@@ -77,7 +77,7 @@ void NodeRpcProxy::resetInternalState() {
   lastLocalBlockHeaderInfo.reward = 0;
   m_knownTxs.clear();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::init(const INode::Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -92,7 +92,7 @@ void NodeRpcProxy::init(const INode::Callback& callback) {
     workerThread(callback); 
   });
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool NodeRpcProxy::shutdown() {
   std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -121,7 +121,7 @@ bool NodeRpcProxy::shutdown() {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::workerThread(const INode::Callback& initialized_callback) {
   try {
     Dispatcher dispatcher;
@@ -166,7 +166,7 @@ void NodeRpcProxy::workerThread(const INode::Callback& initialized_callback) {
   m_connected = false;
   m_rpcProxyObserverManager.notify(&INodeRpcProxyObserver::connectionStatusUpdated, m_connected);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::updateNodeStatus() {
   bool updateBlockchain = true;
   while (updateBlockchain) {
@@ -174,7 +174,7 @@ void NodeRpcProxy::updateNodeStatus() {
     updateBlockchain = !updatePoolStatus();
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool NodeRpcProxy::updatePoolStatus() {
   std::vector<Crypto::Hash> knownTxs = getKnownTxsVector();
   Crypto::Hash tailBlock = lastLocalBlockHeaderInfo.hash;
@@ -199,7 +199,7 @@ bool NodeRpcProxy::updatePoolStatus() {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::updateBlockchainStatus() {
   CryptoNote::COMMAND_RPC_GET_LAST_BLOCK_HEADER::request req = AUTO_VAL_INIT(req);
   CryptoNote::COMMAND_RPC_GET_LAST_BLOCK_HEADER::response rsp = AUTO_VAL_INIT(rsp);
@@ -255,14 +255,14 @@ void NodeRpcProxy::updateBlockchainStatus() {
     m_rpcProxyObserverManager.notify(&INodeRpcProxyObserver::connectionStatusUpdated, m_connected);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::updatePeerCount(size_t peerCount) {
   if (peerCount != m_peerCount) {
     m_peerCount = peerCount;
     m_observerManager.notify(&INodeObserver::peerCountUpdated, m_peerCount.load(std::memory_order_relaxed));
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::updatePoolState(const std::vector<std::unique_ptr<ITransactionReader>>& addedTxs, const std::vector<Crypto::Hash>& deletedTxsIds) {
   for (const auto& hash : deletedTxsIds) {
     m_knownTxs.erase(hash);
@@ -273,59 +273,59 @@ void NodeRpcProxy::updatePoolState(const std::vector<std::unique_ptr<ITransactio
     m_knownTxs.emplace(std::move(hash));
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::vector<Crypto::Hash> NodeRpcProxy::getKnownTxsVector() const {
   return std::vector<Crypto::Hash>(m_knownTxs.begin(), m_knownTxs.end());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool NodeRpcProxy::addObserver(INodeObserver* observer) {
   return m_observerManager.add(observer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool NodeRpcProxy::removeObserver(INodeObserver* observer) {
   return m_observerManager.remove(observer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool NodeRpcProxy::addObserver(CryptoNote::INodeRpcProxyObserver* observer) {
   return m_rpcProxyObserverManager.add(observer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool NodeRpcProxy::removeObserver(CryptoNote::INodeRpcProxyObserver* observer) {
   return m_rpcProxyObserverManager.remove(observer);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 size_t NodeRpcProxy::getPeerCount() const {
   return m_peerCount.load(std::memory_order_relaxed);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint32_t NodeRpcProxy::getLastLocalBlockHeight() const {
   std::lock_guard<std::mutex> lock(m_mutex);
   return lastLocalBlockHeaderInfo.index;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint32_t NodeRpcProxy::getLastKnownBlockHeight() const {
   return m_networkHeight.load(std::memory_order_relaxed);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint32_t NodeRpcProxy::getLocalBlockCount() const {
   std::lock_guard<std::mutex> lock(m_mutex);
   return lastLocalBlockHeaderInfo.index + 1;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint32_t NodeRpcProxy::getKnownBlockCount() const {
   return m_networkHeight.load(std::memory_order_relaxed) + 1;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 uint64_t NodeRpcProxy::getLastLocalBlockTimestamp() const {
   std::lock_guard<std::mutex> lock(m_mutex);
   return lastLocalBlockHeaderInfo.timestamp;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 BlockHeaderInfo NodeRpcProxy::getLastLocalBlockHeaderInfo() const {
   std::lock_guard<std::mutex> lock(m_mutex);
   return lastLocalBlockHeaderInfo;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::relayTransaction(const CryptoNote::Transaction& transaction, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -335,7 +335,7 @@ void NodeRpcProxy::relayTransaction(const CryptoNote::Transaction& transaction, 
 
   scheduleRequest(std::bind(&NodeRpcProxy::doRelayTransaction, this, transaction), callback);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getRandomOutsByAmounts(std::vector<uint64_t>&& amounts, uint64_t outsCount,
                                           std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount>& outs,
                                           const Callback& callback) {
@@ -348,7 +348,7 @@ void NodeRpcProxy::getRandomOutsByAmounts(std::vector<uint64_t>&& amounts, uint6
   scheduleRequest(std::bind(&NodeRpcProxy::doGetRandomOutsByAmounts, this, std::move(amounts), outsCount, std::ref(outs)),
     callback);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getNewBlocks(std::vector<Crypto::Hash>&& knownBlockIds,
                                 std::vector<CryptoNote::block_complete_entry>& newBlocks,
                                 uint32_t& startHeight,
@@ -362,7 +362,7 @@ void NodeRpcProxy::getNewBlocks(std::vector<Crypto::Hash>&& knownBlockIds,
   scheduleRequest(std::bind(&NodeRpcProxy::doGetNewBlocks, this, std::move(knownBlockIds), std::ref(newBlocks),
     std::ref(startHeight)), callback);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getTransactionOutsGlobalIndices(const Crypto::Hash& transactionHash,
                                                    std::vector<uint32_t>& outsGlobalIndices, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
@@ -374,7 +374,7 @@ void NodeRpcProxy::getTransactionOutsGlobalIndices(const Crypto::Hash& transacti
   scheduleRequest(std::bind(&NodeRpcProxy::doGetTransactionOutsGlobalIndices, this, transactionHash,
     std::ref(outsGlobalIndices)), callback);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::queryBlocks(std::vector<Crypto::Hash>&& knownBlockIds, uint64_t timestamp, std::vector<BlockShortEntry>& newBlocks,
   uint32_t& startHeight, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
@@ -386,7 +386,7 @@ void NodeRpcProxy::queryBlocks(std::vector<Crypto::Hash>&& knownBlockIds, uint64
   scheduleRequest(std::bind(&NodeRpcProxy::doQueryBlocksLite, this, std::move(knownBlockIds), timestamp,
           std::ref(newBlocks), std::ref(startHeight)), callback);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getPoolSymmetricDifference(std::vector<Crypto::Hash>&& knownPoolTxIds, Crypto::Hash knownBlockId, bool& isBcActual,
         std::vector<std::unique_ptr<ITransactionReader>>& newTxs, std::vector<Crypto::Hash>& deletedTxIds, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
@@ -398,7 +398,7 @@ void NodeRpcProxy::getPoolSymmetricDifference(std::vector<Crypto::Hash>&& knownP
   scheduleRequest([this, knownPoolTxIds, knownBlockId, &isBcActual, &newTxs, &deletedTxIds] () mutable -> std::error_code {
     return this->doGetPoolSymmetricDifference(std::move(knownPoolTxIds), knownBlockId, isBcActual, newTxs, deletedTxIds); } , callback);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getMultisignatureOutputByGlobalIndex(uint64_t amount, uint32_t gindex, MultisignatureOutput& out, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -409,7 +409,7 @@ void NodeRpcProxy::getMultisignatureOutputByGlobalIndex(uint64_t amount, uint32_
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getBlocks(const std::vector<uint32_t>& blockHeights, std::vector<std::vector<BlockDetails>>& blocks, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -420,7 +420,7 @@ void NodeRpcProxy::getBlocks(const std::vector<uint32_t>& blockHeights, std::vec
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getBlocks(uint64_t timestampBegin, uint64_t timestampEnd, uint32_t blocksNumberLimit, std::vector<BlockDetails>& blocks, uint32_t& blocksNumberWithinTimestamps, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -431,7 +431,7 @@ void NodeRpcProxy::getBlocks(uint64_t timestampBegin, uint64_t timestampEnd, uin
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getBlocks(const std::vector<Crypto::Hash>& blockHashes, std::vector<BlockDetails>& blocks, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -442,7 +442,7 @@ void NodeRpcProxy::getBlocks(const std::vector<Crypto::Hash>& blockHashes, std::
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<TransactionDetails>& transactions, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -453,7 +453,7 @@ void NodeRpcProxy::getTransactions(const std::vector<Crypto::Hash>& transactionH
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getPoolTransactions(uint64_t timestampBegin, uint64_t timestampEnd, uint32_t transactionsNumberLimit, std::vector<TransactionDetails>& transactions, uint64_t& transactionsNumberWithinTimestamps, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -464,7 +464,7 @@ void NodeRpcProxy::getPoolTransactions(uint64_t timestampBegin, uint64_t timesta
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::getTransactionsByPaymentId(const Crypto::Hash& paymentId, std::vector<TransactionDetails>& transactions, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -475,7 +475,7 @@ void NodeRpcProxy::getTransactionsByPaymentId(const Crypto::Hash& paymentId, std
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::isSynchronized(bool& syncStatus, const Callback& callback) {
   std::lock_guard<std::mutex> lock(m_mutex);
   if (m_state != STATE_INITIALIZED) {
@@ -486,14 +486,14 @@ void NodeRpcProxy::isSynchronized(bool& syncStatus, const Callback& callback) {
   // TODO NOT IMPLEMENTED
   callback(std::error_code());
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::error_code NodeRpcProxy::doRelayTransaction(const CryptoNote::Transaction& transaction) {
   COMMAND_RPC_SEND_RAW_TX::request req;
   COMMAND_RPC_SEND_RAW_TX::response rsp;
   req.tx_as_hex = toHex(toBinaryArray(transaction));
   return jsonCommand("/sendrawtransaction", req, rsp);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::error_code NodeRpcProxy::doGetRandomOutsByAmounts(std::vector<uint64_t>& amounts, uint64_t outsCount,
                                                        std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::outs_for_amount>& outs) {
   COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request req = AUTO_VAL_INIT(req);
@@ -508,7 +508,7 @@ std::error_code NodeRpcProxy::doGetRandomOutsByAmounts(std::vector<uint64_t>& am
 
   return ec;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::error_code NodeRpcProxy::doGetNewBlocks(std::vector<Crypto::Hash>& knownBlockIds,
                                              std::vector<CryptoNote::block_complete_entry>& newBlocks,
                                              uint32_t& startHeight) {
@@ -524,7 +524,7 @@ std::error_code NodeRpcProxy::doGetNewBlocks(std::vector<Crypto::Hash>& knownBlo
 
   return ec;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::error_code NodeRpcProxy::doGetTransactionOutsGlobalIndices(const Crypto::Hash& transactionHash,
                                                                 std::vector<uint32_t>& outsGlobalIndices) {
   CryptoNote::COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES::request req = AUTO_VAL_INIT(req);
@@ -541,7 +541,7 @@ std::error_code NodeRpcProxy::doGetTransactionOutsGlobalIndices(const Crypto::Ha
 
   return ec;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::error_code NodeRpcProxy::doQueryBlocksLite(const std::vector<Crypto::Hash>& knownBlockIds, uint64_t timestamp,
         std::vector<CryptoNote::BlockShortEntry>& newBlocks, uint32_t& startHeight) {
   CryptoNote::COMMAND_RPC_QUERY_BLOCKS_LITE::request req = AUTO_VAL_INIT(req);
@@ -582,7 +582,7 @@ std::error_code NodeRpcProxy::doQueryBlocksLite(const std::vector<Crypto::Hash>&
 
   return std::error_code();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 std::error_code NodeRpcProxy::doGetPoolSymmetricDifference(std::vector<Crypto::Hash>&& knownPoolTxIds, Crypto::Hash knownBlockId, bool& isBcActual,
         std::vector<std::unique_ptr<ITransactionReader>>& newTxs, std::vector<Crypto::Hash>& deletedTxIds) {
   CryptoNote::COMMAND_RPC_GET_POOL_CHANGES_LITE::request req = AUTO_VAL_INIT(req);
@@ -607,7 +607,7 @@ std::error_code NodeRpcProxy::doGetPoolSymmetricDifference(std::vector<Crypto::H
 
   return ec;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void NodeRpcProxy::scheduleRequest(std::function<std::error_code()>&& procedure, const Callback& callback) {
   // callback is located on stack, so copy it inside binder
   class Wrapper {
@@ -646,7 +646,7 @@ void NodeRpcProxy::scheduleRequest(std::function<std::error_code()>&& procedure,
       }, std::move(procedure), std::move(callback)));
     }, std::move(procedure), callback));
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 template <typename Request, typename Response>
 std::error_code NodeRpcProxy::binaryCommand(const std::string& url, const Request& req, Response& res) {
   std::error_code ec;
@@ -663,7 +663,7 @@ std::error_code NodeRpcProxy::binaryCommand(const std::string& url, const Reques
 
   return ec;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 template <typename Request, typename Response>
 std::error_code NodeRpcProxy::jsonCommand(const std::string& url, const Request& req, Response& res) {
   std::error_code ec;
@@ -680,7 +680,7 @@ std::error_code NodeRpcProxy::jsonCommand(const std::string& url, const Request&
 
   return ec;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 template <typename Request, typename Response>
 std::error_code NodeRpcProxy::jsonRpcCommand(const std::string& method, const Request& req, Response& res) {
   std::error_code ec = make_error_code(error::INTERNAL_NODE_ERROR);
@@ -718,5 +718,5 @@ std::error_code NodeRpcProxy::jsonRpcCommand(const std::string& method, const Re
 
   return ec;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }

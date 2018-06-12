@@ -20,9 +20,9 @@ void serializeBlockHeight(ISerializer& s, uint32_t& blockHeight, Common::StringV
     s(blockHeight, name);
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void serializeGlobalOutputIndex(ISerializer& s, uint32_t& globalOutputIndex, Common::StringView name) {
   serializeBlockHeight(s, globalOutputIndex, name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 } //namespace CryptoNote

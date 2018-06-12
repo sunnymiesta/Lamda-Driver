@@ -29,14 +29,14 @@ void insertOrPush(JsonValue& js, Common::StringView name, const T& value) {
 JsonOutputStreamSerializer::JsonOutputStreamSerializer() : root(JsonValue::OBJECT) {
   chain.push_back(&root);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 JsonOutputStreamSerializer::~JsonOutputStreamSerializer() {
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 ISerializer::SerializerType JsonOutputStreamSerializer::type() const {
   return ISerializer::OUTPUT;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::beginObject(Common::StringView name) {
   JsonValue& parent = *chain.back();
   JsonValue obj(JsonValue::OBJECT);
@@ -49,79 +49,80 @@ bool JsonOutputStreamSerializer::beginObject(Common::StringView name) {
 
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonOutputStreamSerializer::endObject() {
   assert(!chain.empty());
   chain.pop_back();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::beginArray(size_t& size, Common::StringView name) {
   JsonValue val(JsonValue::ARRAY);
   JsonValue& res = chain.back()->insert(std::string(name), val);
   chain.push_back(&res);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void JsonOutputStreamSerializer::endArray() {
   assert(!chain.empty());
   chain.pop_back();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(uint64_t& value, Common::StringView name) {
   int64_t v = static_cast<int64_t>(value);
   return operator()(v, name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(uint16_t& value, Common::StringView name) {
   uint64_t v = static_cast<uint64_t>(value);
   return operator()(v, name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(int16_t& value, Common::StringView name) {
   int64_t v = static_cast<int64_t>(value);
   return operator()(v, name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(uint32_t& value, Common::StringView name) {
   uint64_t v = static_cast<uint64_t>(value);
   return operator()(v, name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(int32_t& value, Common::StringView name) {
   int64_t v = static_cast<int64_t>(value);
   return operator()(v, name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(int64_t& value, Common::StringView name) {
   insertOrPush(*chain.back(), name, value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(double& value, Common::StringView name) {
   insertOrPush(*chain.back(), name, value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(std::string& value, Common::StringView name) {
   insertOrPush(*chain.back(), name, value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(uint8_t& value, Common::StringView name) {
   insertOrPush(*chain.back(), name, static_cast<int64_t>(value));
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::operator()(bool& value, Common::StringView name) {
   insertOrPush(*chain.back(), name, value);
   return true;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::binary(void* value, size_t size, Common::StringView name) {
   std::string hex = Common::toHex(value, size);
   return (*this)(hex, name);
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 bool JsonOutputStreamSerializer::binary(std::string& value, Common::StringView name) {
   return binary(const_cast<char*>(value.data()), value.size(), name);
 }
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//

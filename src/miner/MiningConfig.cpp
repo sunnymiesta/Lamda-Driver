@@ -20,9 +20,9 @@ namespace {
 const size_t DEFAULT_SCANT_PERIOD = 30;
 const char* DEFAULT_DAEMON_HOST = "127.0.0.1";
 const size_t CONCURRENCY_LEVEL = std::thread::hardware_concurrency();
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 po::options_description cmdOptions;
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void parseDaemonAddress(const std::string& daemonAddress, std::string& daemonHost, uint16_t& daemonPort) {
   std::vector<std::string> splittedAddress;
   boost::algorithm::split(splittedAddress, daemonAddress, boost::algorithm::is_any_of(":"));
@@ -43,7 +43,7 @@ void parseDaemonAddress(const std::string& daemonAddress, std::string& daemonHos
     throw std::runtime_error("Wrong daemon address format");
   }
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
 
 MiningConfig::MiningConfig(): help(false) {
@@ -61,7 +61,7 @@ MiningConfig::MiningConfig(): help(false) {
       ("block-timestamp-interval", po::value<int64_t>()->default_value(0), "Timestamp step for each subsequent block. May be set only if --first-block-timestamp has been set."
                                                          " If not set blocks' timestamps remain unchanged");
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MiningConfig::parse(int argc, char** argv) {
   po::variables_map options;
   po::store(po::parse_command_line(argc, argv, cmdOptions), options);
@@ -113,9 +113,9 @@ void MiningConfig::parse(int argc, char** argv) {
   firstBlockTimestamp = options["first-block-timestamp"].as<uint64_t>();
   blockTimestampInterval = options["block-timestamp-interval"].as<int64_t>();
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 void MiningConfig::printHelp() {
   std::cout << cmdOptions << std::endl;
 }
-
+//------------------------------------------------------------- Seperator Code -------------------------------------------------------------//
 }
