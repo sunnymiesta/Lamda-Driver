@@ -91,8 +91,8 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 
 } // parameters
 
-const char     CRYPTONOTE_NAME[]                             = "Cryptonote";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff0001c0843d029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101641826fa1e022159cec827e76e40b0ac18444dc77cc0a6f860d72964a4dd596d";
+const char     CRYPTONOTE_NAME[]                             = "Adina";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "10a01ff0001c0843d029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101d85af274581852e51ea90f38c9f2ca3b52ee22c92020332ecdf9995ec4ebadc7";
 
 const uint32_t GENESIS_NONCE                                 = 70;
 const uint64_t GENESIS_TIMESTAMP                             = 1528086815;
@@ -109,8 +109,8 @@ const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        = 10000; // by defa
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            = 128; // by default, blocks count in blocks downloading
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         = 1000;
 
-const int      P2P_DEFAULT_PORT                              = 7080;
-const int      RPC_DEFAULT_PORT                              = 7081;
+const int      P2P_DEFAULT_PORT                              = 35715;
+const int      RPC_DEFAULT_PORT                              = 35716;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                = 1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 = 5000;
@@ -128,7 +128,10 @@ const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000; // 5 second
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "F29507CA78955F37A3B783EE2C5123B8B6A34A0C5CAAE050922C62541614G090";
 
 const std::initializer_list<const char*> SEED_NODES = {
-  "ec2-18-219-51-252.us-east-2.compute.amazonaws.com:7080", "ec2-13-58-224-8.us-east-2.compute.amazonaws.com:7080",
+  "192.168.2.47:35715",
+  "192.168.2.46:35715",
+  "192.168.2.45:35715",
+  "192.168.2.44:35715",
 };
 
 struct CheckpointData {

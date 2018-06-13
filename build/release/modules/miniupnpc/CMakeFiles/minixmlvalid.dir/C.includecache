@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/minecraft/adinav7/modules/miniupnpc/minixml.c
+string.h
+-
+minixml.h
+/home/minecraft/adinav7/modules/miniupnpc/minixml.h
+
+/home/minecraft/adinav7/modules/miniupnpc/minixml.h
+
+/home/minecraft/adinav7/modules/miniupnpc/minixmlvalid.c
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+minixml.h
+/home/minecraft/adinav7/modules/miniupnpc/minixml.h
+

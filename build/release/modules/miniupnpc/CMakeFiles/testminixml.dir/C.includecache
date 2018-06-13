@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/minecraft/adinav7/modules/miniupnpc/igd_desc_parse.c
+igd_desc_parse.h
+/home/minecraft/adinav7/modules/miniupnpc/igd_desc_parse.h
+stdio.h
+-
+string.h
+-
+
+/home/minecraft/adinav7/modules/miniupnpc/igd_desc_parse.h
+
+/home/minecraft/adinav7/modules/miniupnpc/minixml.c
+string.h
+-
+minixml.h
+/home/minecraft/adinav7/modules/miniupnpc/minixml.h
+
+/home/minecraft/adinav7/modules/miniupnpc/minixml.h
+
+/home/minecraft/adinav7/modules/miniupnpc/testminixml.c
+stdlib.h
+-
+stdio.h
+-
+string.h
+-
+minixml.h
+/home/minecraft/adinav7/modules/miniupnpc/minixml.h
+igd_desc_parse.h
+/home/minecraft/adinav7/modules/miniupnpc/igd_desc_parse.h
+
