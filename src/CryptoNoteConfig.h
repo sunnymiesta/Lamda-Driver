@@ -92,7 +92,7 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 } // parameters
 
 const char     CRYPTONOTE_NAME[]                             = "Adina";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "10a01ff0001c0843d029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101d85af274581852e51ea90f38c9f2ca3b52ee22c92020332ecdf9995ec4ebadc7";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "";
 
 const uint32_t GENESIS_NONCE                                 = 70;
 const uint64_t GENESIS_TIMESTAMP                             = 1528086815;

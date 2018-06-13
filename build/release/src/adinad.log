@@ -1,4 +1,0 @@
-2018-Jun-13 10:54:11.553637 INFO    [daemon] Adina v3.0.3.507.LamdaDriver-v3()
-2018-Jun-13 10:54:11.553812 INFO    [daemon] Module folder: ./adinad
-2018-Jun-13 10:54:11.554018 ERROR   [currency] failed to parse coinbase tx from hard coded blob
-2018-Jun-13 10:54:11.554080 ERROR   [currency] Failed to generate genesis block
